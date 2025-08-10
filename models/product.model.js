@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { generateSKU, isUniqueSKU } from "../utils";
 
 const productSchema = new mongoose.Schema(
   {
@@ -22,6 +23,21 @@ const productSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+productSchema.pre("validate", async function (next) {
+  if (!this.SKU) {
+    let newSKU;
+    let unique = false;
+
+    while (!unique) {
+      newSKU = generateSKU(this.name);
+      unique = await isUniqueSKU(newSKU);
+    }
+
+    this.SKU = newSKU;
+  }
+  next();
+});
 
 const Product = mongoose.model("Product", productSchema);
 
