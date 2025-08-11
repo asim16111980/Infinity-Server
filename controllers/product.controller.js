@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import Product from "../models/product.model.js";
+import httpStatusText from "../utils/httpStatusText.js";
 
 const addProduct = async (req, res) => {
   const errors = validationResult(req);
@@ -10,7 +11,9 @@ const addProduct = async (req, res) => {
   try {
     const product = new Product(req.body);
     const savedProduct = await product.save();
-    res.status(201).json(savedProduct);
+    res
+      .status(201)
+      .json({ status: httpStatusText.SUCCESS, data: savedProduct });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -19,7 +22,7 @@ const addProduct = async (req, res) => {
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
-    res.status(200).json(products);
+    res.status(200).json({ status: httpStatusText.SUCCESS, data: products });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -29,11 +32,18 @@ const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (!product) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ status: httpStatusText.FAIL, data: null });
     }
-    res.status(200).json(product);
+    res.status(200).json({ status: httpStatusText.SUCCESS, data: { product } });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res
+      .status(500)
+      .json({
+        status: httpStatusText.ERROR,
+        message: err.message,
+        data: null,
+        code: 500,
+      });
   }
 };
 
@@ -60,7 +70,7 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.deleteOne(req.params.id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
