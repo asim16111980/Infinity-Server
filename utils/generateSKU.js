@@ -1,23 +1,14 @@
-function generateSKU(productName) {
-    // نحول الاسم لحروف كبيرة
-    const upperName = productName.toUpperCase();
-  
-    // نشيل أي مسافات أو رموز مش ضرورية
-    const cleanName = upperName.replace(/[^A-Z0-9]/g, "");
-  
-    // ناخد أول 6 حروف أو أرقام من الاسم
-    const namePart = cleanName.slice(0, 6);
-  
-    // نضيف رقم فريد عشان نمنع التكرار
-    const uniquePart = Date.now().toString().slice(-4);
-  
-    return `${namePart}-${uniquePart}`;
-  }
-   
-  // دالة التحقق من أن الـ SKU فريد
-  export const isUniqueSKU = async (sku) => {
-    const exists = await Product.findOne({ SKU: sku });
-    return !exists; // true لو فريد، false لو مكرر
-  };
-  
-  
+import Product from "../models/product.model.js";
+
+export function generateSKU(productName = "") {
+  const upperName = productName.toUpperCase().trim() || "PROD";
+  const cleanName = upperName.replace(/[^A-Z0-9]/g, "");
+  const namePart = cleanName.slice(0, 6).padEnd(6, "X");
+  const uniquePart = Math.floor(Math.random() * 9000 + 1000);
+  return `${namePart}-${uniquePart}`;
+}
+
+export const isUniqueSKU = async (sku) => {
+  const exists = await Product.exists({ SKU: sku });
+  return !exists;
+};
