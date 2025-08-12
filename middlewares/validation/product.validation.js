@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 const baseProductRules = {
-  name: body("name")
+  title: body("title")
     .isString().withMessage("Name must be a string")
     .trim(),
 
@@ -12,7 +12,7 @@ const baseProductRules = {
   price: body("price")
     .isFloat({ min: 0 }).withMessage("Price must be a number >= 0"),
 
-  category: body("category")
+    categories: body("categories")
     .isString().withMessage("Category must be a string")
     .trim(),
 

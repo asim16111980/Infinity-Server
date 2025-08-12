@@ -4,10 +4,12 @@ import "dotenv/config";
 import mongoose from "mongoose";
 import productRouter from "./routes/product.route.js";
 import { jsendFail } from "../utils/jsend.js";
+import { path } from "path";
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cors());
 app.use(express.json());
 app.use("/api/products", productRouter);
@@ -22,7 +24,7 @@ app.use((err, req, res, next) => {
   }
   if (err instanceof AppError) {
     return jsendFail(res, { message: err.message }, err.statusCode);
-  } 
+  }
   return jsendError(res, err.message);
 });
 
