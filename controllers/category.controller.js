@@ -20,12 +20,20 @@ const addCategory = asyncWrapper(async (req, res) => {
 });
 
 const getCategories = asyncWrapper(async (req, res) => {
-  const categories = await Category.find({}, { __v: 0 });
+  const categories = await Category.find(
+    {},
+    { __v: 0, createdAt: 0, updatedAt: 0 }
+  );
   return jsendSuccess(res, { categories });
 });
 
 const getCategoryById = asyncWrapper(async (req, res) => {
-  const category = await Category.findById(req.params.id);
+  const category = await Category.findById(req.params.id, {
+    __v: 0,
+    createdAt: 0,
+    updatedAt: 0,
+  });
+
   if (!category) {
     throw new AppError("Category not found", 404);
   }
@@ -33,15 +41,23 @@ const getCategoryById = asyncWrapper(async (req, res) => {
 });
 
 const updateCategory = asyncWrapper(async (req, res) => {
+  
+  
+  const { title, visibility } = req.body;
+  console.log("Updating with data:", { title, visibility });
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
 
-  const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  const category = await Category.findByIdAndUpdate(
+    req.params.id,
+    { title, visibility },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   if (!category) {
     throw new AppError("Category not found", 404);
