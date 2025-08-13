@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { generateSKU, isUniqueSKU } from "../utils";
+import { generateSKU, isUniqueSKU } from "../utils/generateSKU.js";
 
 const productSchema = new mongoose.Schema(
   {

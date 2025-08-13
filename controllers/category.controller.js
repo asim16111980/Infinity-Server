@@ -1,70 +1,53 @@
 import { validationResult } from "express-validator";
-import Product from "../models/product.model.js";
+import Category from "../models/category.model.js";
 import { jsendSuccess } from "../utils/jsend.js";
 import AppError from "../utils/appError.js";
 import asyncWrapper from "../middlewares/asyncWrapper.js";
 
-const addProduct = asyncWrapper(async (req, res) => {
+const addCategory = asyncWrapper(async (req, res) => {
+  const { title, visibility } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
-  const product = new Product({title,desc,price,options,images:req.file.filename,discount,categories});
-  const savedProduct = await product.save();
-  return jsendSuccess(res, { product: savedProduct }, 201);
+  const category = new Category({
+    title,
+    thumbnail: req.file.filename,
+    visibility,
+  });
+  const savedCategory = await category.save();
+  return jsendSuccess(res, { category: savedCategory }, 201);
 });
 
-const getProducts = asyncWrapper(async (req, res) => {
-  const limit = parseInt(req.query.limit) || 10;
-  const page = parseInt(req.query.page) || 1;
-  const skip = (page - 1) * limit;
-
-  const products = await Product.find({}, { __v: 0 }).limit(limit).skip(skip);
-  return jsendSuccess(res, { products });
+const getCategories = asyncWrapper(async (req, res) => {
+  const categories = await Category.find({}, { __v: 0 });
+  return jsendSuccess(res, { categories });
 });
 
-const getProductById = asyncWrapper(async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  if (!product) {
-    throw new AppError("Product not found", 404);
+const getCategoryById = asyncWrapper(async (req, res) => {
+  const category = await Category.findById(req.params.id);
+  if (!category) {
+    throw new AppError("Category not found", 404);
   }
-  return jsendSuccess(res, { product });
+  return jsendSuccess(res, { category });
 });
 
-const updateProduct = asyncWrapper(async (req, res) => {
+const updateCategory = asyncWrapper(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
 
-  if (req.body.SKU) {
-    throw new AppError("Cannot update SKU", 400);
-  }
-
-  const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+  const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
 
-  if (!product) {
-    throw new AppError("Product not found", 404);
+  if (!category) {
+    throw new AppError("Category not found", 404);
   }
 
-  return jsendSuccess(res, { product });
+  return jsendSuccess(res, { category });
 });
 
-const deleteProduct = asyncWrapper(async (req, res) => {
-  const product = await Product.findByIdAndDelete(req.params.id);
-  if (!product) {
-    throw new AppError("Product not found", 404);
-  }
-  return jsendSuccess(res, { product });
-});
-
-export {
-  addProduct,
-  getProducts,
-  getProductById,
-  updateProduct,
-  deleteProduct,
-};
+export { addCategory, getCategories, getCategoryById, updateCategory };

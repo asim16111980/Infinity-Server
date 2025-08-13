@@ -1,16 +1,15 @@
 import express from "express";
 import {
-  createProductRules,
-  updateProductRules,
-} from "../middlewares/validation/product.validation.js";
+  createCategoryRules,
+  updateCategoryRules,
+} from "../middlewares/validation/category.validation.js";
 import {
-  getProducts,
-  getProductById,
-  addProduct,
-  updateProduct,
-  deleteProduct,
-} from "../controllers/product.controller.js";
-import { validateRequest } from "../middlewares/validation/validateRequest .js";
+  getCategories,
+  getCategoryById,
+  addCategory,
+  updateCategory,
+} from "../controllers/category.controller.js";
+import { validateRequest } from "../middlewares/validation/validateRequest.js";
 import multer from "multer";
 import { diskStorage, fileFilter } from "../utils/uploadImage.js";
 
@@ -19,17 +18,16 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(getProducts)
+  .get(getCategories)
   .post(
-    createProductRules,
+    upload.single("thumbnail"),
+    createCategoryRules,
     validateRequest,
-    upload.array("uploads", 12),
-    addProduct
+    addCategory
   );
 router
   .route("/:id")
-  .get(getProductById)
-  .patch(updateProductRules, validateRequest, updateProduct)
-  .delete(deleteProduct);
+  .get(getCategoryById)
+  .patch(updateCategoryRules, validateRequest, updateCategory);
 
 export default router;

@@ -10,7 +10,7 @@ import {
   updateProduct,
   deleteProduct,
 } from "../controllers/product.controller.js";
-import { validateRequest } from "../middlewares/validation/validateRequest .js";
+import { validateRequest } from "../middlewares/validation/validateRequest.js";
 import multer from "multer";
 import { diskStorage, fileFilter } from "../utils/uploadImage.js";
 
@@ -21,9 +21,9 @@ router
   .route("/")
   .get(getProducts)
   .post(
+    upload.array("productImages", 12),
     createProductRules,
     validateRequest,
-    upload.array("uploads", 12),
     addProduct
   );
 router

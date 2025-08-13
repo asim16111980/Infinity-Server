@@ -13,7 +13,8 @@ const baseProductRules = {
     .isFloat({ min: 0 }).withMessage("Price must be a number >= 0"),
 
     categories: body("categories")
-    .isString().withMessage("Category must be a string")
+    .isArray().withMessage("Categories must be an array")
+    .custom((arr) => arr.every((cat) => typeof cat === "string"))
     .trim(),
 
   images: body("images")
@@ -57,10 +58,10 @@ const baseProductRules = {
 };
 
 export const createProductRules = [
-  baseProductRules.name.notEmpty().withMessage("Name is required"),
+  baseProductRules.title.notEmpty().withMessage("Name is required"),
   baseProductRules.desc.notEmpty().withMessage("Description is required"),
   baseProductRules.price.notEmpty().withMessage("Price is required"),
-  baseProductRules.category.notEmpty().withMessage("Category is required"),
+  baseProductRules.categories.notEmpty().withMessage("Categories are required"),
   baseProductRules.images,
   baseProductRules.rating,
   baseProductRules.reviews,
@@ -73,10 +74,10 @@ export const createProductRules = [
 ];
 
 export const updateProductRules = [
-  baseProductRules.name.optional(),
+  baseProductRules.title.optional(),
   baseProductRules.desc.optional(),
   baseProductRules.price.optional(),
-  baseProductRules.category.optional(),
+  baseProductRules.categories.optional(),
   baseProductRules.images.optional(),
   baseProductRules.rating,
   baseProductRules.reviews,
