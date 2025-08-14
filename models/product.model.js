@@ -4,21 +4,28 @@ import { generateSKU, isUniqueSKU } from "../utils/generateSKU.js";
 const productSchema = new mongoose.Schema(
   {
     SKU: { type: String, required: true, unique: true },
-    title: { type: String, required: true, trim: true },
+    name: { type: String, required: true, trim: true },
     desc: { type: String, required: true, trim: true },
     price: { type: Number, required: true, min: 0 },
     categories: [{ type: String, required: true, trim: true }],
     images: [{ type: String, required: true }],
-    rating: { type: Number, min: 0, max: 5 },
-    reviews: [
-      {
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        comment: { type: String, required: true },
-        rating: { type: Number, min: 0, max: 5 },
-      },
-    ],
-    options: [[{ type: String, required: true }]],
-    stock: { type: Number, required: true, min: 0 },
+    rating: { type: Number, min: 0, max: 5, default: 0 },
+    reviews: {
+      type: [
+        {
+          user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          comment: { type: String, required: true },
+          rating: { type: Number, min: 0, max: 5 },
+        },
+      ],
+      default: [],
+    },
+    options: {
+      type: Array,
+      required: true,
+      default: [],
+    },
+    stock: { type: Number, required: true, min: 0, default: 0 },
     discount: { type: Number, min: 0, max: 100 },
   },
   { timestamps: true }

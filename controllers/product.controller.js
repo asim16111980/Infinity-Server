@@ -9,7 +9,16 @@ const addProduct = asyncWrapper(async (req, res) => {
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
-  const product = new Product({title,desc,price,options,images:req.file.filename,discount,categories});
+  const { name, desc, price, discount, categories, options } = req.body;
+  const product = new Product({
+    name,
+    desc,
+    price,
+    discount,
+    options,
+    categories,
+    images: req.file.filename,
+  });
   const savedProduct = await product.save();
   return jsendSuccess(res, { product: savedProduct }, 201);
 });

@@ -5,13 +5,13 @@ import AppError from "../utils/appError.js";
 import asyncWrapper from "../middlewares/asyncWrapper.js";
 
 const addCategory = asyncWrapper(async (req, res) => {
-  const { title, visibility } = req.body;
+  const { name, visibility } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
   const category = new Category({
-    title,
+    name,
     thumbnail: req.file.filename,
     visibility,
   });
@@ -41,23 +41,21 @@ const getCategoryById = asyncWrapper(async (req, res) => {
 });
 
 const updateCategory = asyncWrapper(async (req, res) => {
-  
-  
-  const { title, visibility } = req.body;
-  console.log("Updating with data:", { title, visibility });
+  const { name, visibility } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
 
-  const category = await Category.findByIdAndUpdate(
-    req.params.id,
-    { title, visibility },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  const updateData = { name, visibility };
+  if (req.file) {
+    updateData.thumbnail = req.file.filename;
+  }
+
+  const category = await Category.findByIdAndUpdate(req.params.id, updateData, {
+    new: true,
+    runValidators: true,
+  });
 
   if (!category) {
     throw new AppError("Category not found", 404);

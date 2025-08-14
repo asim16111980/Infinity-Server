@@ -10,18 +10,20 @@ import {
   updateProduct,
   deleteProduct,
 } from "../controllers/product.controller.js";
+import upload from "../utils/uploadImage.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
-import multer from "multer";
-import { diskStorage, fileFilter } from "../utils/uploadImage.js";
+import { checkImages } from "../middlewares/validation/checkImages.js";
+import setImageField from "../middlewares/setImageField.js";
 
-const upload = multer({ storage: diskStorage, fileFilter });
 const router = express.Router();
 
 router
   .route("/")
   .get(getProducts)
   .post(
+    setImageField("name"),
     upload.array("productImages", 12),
+    checkImages,
     createProductRules,
     validateRequest,
     addProduct
@@ -29,7 +31,13 @@ router
 router
   .route("/:id")
   .get(getProductById)
-  .patch(updateProductRules, validateRequest, updateProduct)
+  .patch(
+    setImageField("name"),
+    upload.array("productImages", 12),
+    updateProductRules,
+    validateRequest,
+    updateProduct
+  )
   .delete(deleteProduct);
 
 export default router;

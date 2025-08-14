@@ -15,6 +15,11 @@ const port = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.post('/test', (req, res) => {
+  console.log(req.body);
+  res.send(req.body);
+});
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cors());
 app.use(express.json());

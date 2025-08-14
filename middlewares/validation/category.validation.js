@@ -1,26 +1,36 @@
 import { body } from "express-validator";
 
 const baseCategoryRules = {
-  title: body("title").isString().withMessage("Name must be a string").trim(),
-
-  thumbnail: body("thumbnail")
+  name: body("name")
+    .optional()
     .isString()
-    .withMessage("Thumbnail must be a string")
+    .withMessage("Name must be a string")
     .trim(),
 
   visibility: body("visibility")
+    .optional()
+    .toBoolean()
     .isBoolean()
     .withMessage("Visibility must be a boolean"),
 };
 
 export const createCategoryRules = [
-  baseCategoryRules.title.notEmpty().withMessage("Title is required"),
-  baseCategoryRules.thumbnail,
-  baseCategoryRules.visibility,
+  body("name")
+    .notEmpty()
+    .withMessage("Name is required")
+    .isString()
+    .withMessage("Name must be a string")
+    .trim(),
+
+  body("visibility")
+    .notEmpty()
+    .withMessage("Visibility is required")
+    .toBoolean()
+    .isBoolean()
+    .withMessage("Visibility must be a boolean"),
 ];
 
 export const updateCategoryRules = [
-  baseCategoryRules.title.optional(),
-  baseCategoryRules.thumbnail.optional(),
-  baseCategoryRules.visibility.optional(),
+  baseCategoryRules.name,
+  baseCategoryRules.visibility,
 ];

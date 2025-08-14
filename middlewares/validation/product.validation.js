@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 const baseProductRules = {
-  title: body("title")
+  name: body("name")
     .isString().withMessage("Name must be a string")
     .trim(),
 
@@ -16,11 +16,6 @@ const baseProductRules = {
     .isArray().withMessage("Categories must be an array")
     .custom((arr) => arr.every((cat) => typeof cat === "string"))
     .trim(),
-
-  images: body("images")
-    .isArray({ min: 1 }).withMessage("Images must be an array with at least one item")
-    .custom((arr) => arr.every((url) => typeof url === "string"))
-    .withMessage("All images must be strings"),
 
   rating: body("rating")
     .optional()
@@ -58,11 +53,10 @@ const baseProductRules = {
 };
 
 export const createProductRules = [
-  baseProductRules.title.notEmpty().withMessage("Name is required"),
+  baseProductRules.name.notEmpty().withMessage("Name is required"),
   baseProductRules.desc.notEmpty().withMessage("Description is required"),
   baseProductRules.price.notEmpty().withMessage("Price is required"),
   baseProductRules.categories.notEmpty().withMessage("Categories are required"),
-  baseProductRules.images,
   baseProductRules.rating,
   baseProductRules.reviews,
   baseProductRules.reviewUser,
@@ -74,11 +68,10 @@ export const createProductRules = [
 ];
 
 export const updateProductRules = [
-  baseProductRules.title.optional(),
+  baseProductRules.name.optional(),
   baseProductRules.desc.optional(),
   baseProductRules.price.optional(),
   baseProductRules.categories.optional(),
-  baseProductRules.images.optional(),
   baseProductRules.rating,
   baseProductRules.reviews,
   baseProductRules.reviewUser,
