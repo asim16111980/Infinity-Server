@@ -1,23 +1,28 @@
 import multer from "multer";
 import path from "path";
 import AppError from "../utils/appError.js";
+import fs from "fs";
+
+const safePrefix = (req) => {
+  const prefix = req.body[req.imageUploadFieldName] || req.body.name || "image";
+  return String(prefix).replace(/\s+/g, "-").toLowerCase();
+};
 
 const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads");
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
+    let uploadPath = path.join("uploads", req.imageUploadFolderName);
 
-    let prefix;
-    if (req.imageField && req.body[req.imageField]) {
-      prefix = req.body[req.imageField];
-    } else {
-      prefix = req.body.name || "image";
+    if (req.useSubFoldersForImages) {
+      uploadPath = path.join(uploadPath, safePrefix(req));
     }
 
-    const safePrefix = String(prefix).replace(/\s+/g, "-").toLowerCase();
-    cb(null, `${safePrefix}-${Date.now()}${ext}`);
+    fs.mkdirSync(uploadPath, { recursive: true });
+    cb(null, uploadPath);
+  },
+
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `${safePrefix(req)}-${Date.now()}${ext}`);
   },
 });
 

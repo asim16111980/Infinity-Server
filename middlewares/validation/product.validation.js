@@ -1,55 +1,72 @@
 import { body } from "express-validator";
 
 const baseProductRules = {
-  name: body("name")
-    .isString().withMessage("Name must be a string")
-    .trim(),
+  name: body("name").isString().withMessage("Name must be a string").trim(),
 
   desc: body("desc")
-    .isString().withMessage("Description must be a string")
+    .isString()
+    .withMessage("Description must be a string")
     .trim(),
 
   price: body("price")
-    .isFloat({ min: 0 }).withMessage("Price must be a number >= 0"),
+    .isFloat({ min: 0 })
+    .withMessage("Price must be a number >= 0"),
 
-    categories: body("categories")
-    .isArray().withMessage("Categories must be an array")
+  categories: body("categories")
+    .toArray()
+    .isArray()
+    .withMessage("Categories must be an array")
     .custom((arr) => arr.every((cat) => typeof cat === "string"))
     .trim(),
 
   rating: body("rating")
     .optional()
-    .isFloat({ min: 0, max: 5 }).withMessage("Rating must be between 0 and 5"),
+    .isFloat({ min: 0, max: 5 })
+    .withMessage("Rating must be between 0 and 5"),
 
   reviews: body("reviews")
     .optional()
-    .isArray().withMessage("Reviews must be an array"),
+    .toArray()
+    .isArray()
+    .withMessage("Reviews must be an array"),
 
   reviewUser: body("reviews.*.user")
     .optional()
-    .isMongoId().withMessage("Review user must be a valid Mongo ID"),
+    .isMongoId()
+    .withMessage("Review user must be a valid Mongo ID"),
 
   reviewComment: body("reviews.*.comment")
     .optional()
-    .isString().withMessage("Review comment must be a string")
-    .notEmpty().withMessage("Review comment is required"),
+    .isString()
+    .withMessage("Review comment must be a string")
+    .notEmpty()
+    .withMessage("Review comment is required"),
 
   reviewRating: body("reviews.*.rating")
     .optional()
-    .isFloat({ min: 0, max: 5 }).withMessage("Review rating must be between 0 and 5"),
+    .isFloat({ min: 0, max: 5 })
+    .withMessage("Review rating must be between 0 and 5"),
 
   options: body("options")
     .optional()
-    .isArray().withMessage("Options must be an array of arrays")
-    .custom((options) => options.every((opt) => Array.isArray(opt) && opt.every((o) => typeof o === "string")))
+    .toArray()
+    .isArray()
+    .withMessage("Options must be an array of arrays")
+    .custom((options) =>
+      options.every(
+        (opt) => Array.isArray(opt) && opt.every((o) => typeof o === "string")
+      )
+    )
     .withMessage("Each option must be an array of strings"),
 
   stock: body("stock")
-    .isInt({ min: 0 }).withMessage("Stock must be an integer >= 0"),
+    .isInt({ min: 0 })
+    .withMessage("Stock must be an integer >= 0"),
 
   discount: body("discount")
     .optional()
-    .isFloat({ min: 0, max: 100 }).withMessage("Discount must be between 0 and 100"),
+    .isFloat({ min: 0, max: 100 })
+    .withMessage("Discount must be between 0 and 100"),
 };
 
 export const createProductRules = [

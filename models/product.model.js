@@ -21,8 +21,7 @@ const productSchema = new mongoose.Schema(
       default: [],
     },
     options: {
-      type: Array,
-      required: true,
+      type: [{ optionName: { type: String }, values: { type: [String] } }],
       default: [],
     },
     stock: { type: Number, required: true, min: 0, default: 0 },

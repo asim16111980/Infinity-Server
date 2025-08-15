@@ -12,7 +12,7 @@ import {
 import upload from "../utils/uploadImage.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
 import { checkImages } from "../middlewares/validation/checkImages.js";
-import setImageField from "../middlewares/setImageField.js";
+import configureImageUpload from "../middlewares/configureImageUpload.js";
 
 const router = express.Router();
 
@@ -20,11 +20,11 @@ router
   .route("/")
   .get(getCategories)
   .post(
-    setImageField("name"),
-    upload.single("thumbnail"),
-    checkImages,
     createCategoryRules,
     validateRequest,
+    configureImageUpload("categories", "name"),
+    upload.single("thumbnail"),
+    checkImages,
     addCategory
   );
 
@@ -32,10 +32,10 @@ router
   .route("/:id")
   .get(getCategoryById)
   .patch(
-    setImageField("name"),
-    upload.single("thumbnail"),
     updateCategoryRules,
     validateRequest,
+    configureImageUpload("categories", "name"),
+    upload.single("thumbnail"),
     updateCategory
   );
 

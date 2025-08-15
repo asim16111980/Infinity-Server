@@ -10,6 +10,7 @@ const addProduct = asyncWrapper(async (req, res) => {
     throw new AppError("Validation failed", 400);
   }
   const { name, desc, price, discount, categories, options } = req.body;
+  const images = req.files.map((file) => file.filename);
   const product = new Product({
     name,
     desc,
@@ -17,7 +18,7 @@ const addProduct = asyncWrapper(async (req, res) => {
     discount,
     options,
     categories,
-    images: req.file.filename,
+    images: images,
   });
   const savedProduct = await product.save();
   return jsendSuccess(res, { product: savedProduct }, 201);
@@ -28,12 +29,21 @@ const getProducts = asyncWrapper(async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const skip = (page - 1) * limit;
 
-  const products = await Product.find({}, { __v: 0 }).limit(limit).skip(skip);
+  const products = await Product.find(
+    {},
+    { __v: 0, createdAt: 0, updatedAt: 0 }
+  )
+    .limit(limit)
+    .skip(skip);
   return jsendSuccess(res, { products });
 });
 
 const getProductById = asyncWrapper(async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  const product = await Product.findById(req.params.id, {
+    __v: 0,
+    createdAt: 0,
+    updatedAt: 0,
+  });
   if (!product) {
     throw new AppError("Product not found", 404);
   }

@@ -13,7 +13,7 @@ import {
 import upload from "../utils/uploadImage.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
 import { checkImages } from "../middlewares/validation/checkImages.js";
-import setImageField from "../middlewares/setImageField.js";
+import configureImageUpload from "../middlewares/configureImageUpload.js";
 
 const router = express.Router();
 
@@ -21,21 +21,21 @@ router
   .route("/")
   .get(getProducts)
   .post(
-    setImageField("name"),
-    upload.array("productImages", 12),
-    checkImages,
     createProductRules,
     validateRequest,
+    configureImageUpload("products", "name", true),
+    upload.array("productImages", 12),
+    checkImages,
     addProduct
   );
 router
   .route("/:id")
   .get(getProductById)
   .patch(
-    setImageField("name"),
-    upload.array("productImages", 12),
     updateProductRules,
     validateRequest,
+    configureImageUpload("products", "name", true),
+    upload.array("productImages", 12),
     updateProduct
   )
   .delete(deleteProduct);
