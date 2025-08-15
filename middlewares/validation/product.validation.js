@@ -18,6 +18,11 @@ const baseProductRules = {
     .withMessage("Categories must be an array")
     .custom((arr) => arr.every((cat) => typeof cat === "string"))
     .trim(),
+  
+  imagesFolder: body("imagesFolder")
+    .isString()
+    .withMessage("Images folder must be a string")
+    .trim(),
 
   rating: body("rating")
     .optional()

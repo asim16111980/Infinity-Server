@@ -18,7 +18,7 @@ const addProduct = asyncWrapper(async (req, res) => {
     discount,
     options,
     categories,
-    images: images,
+    images,
   });
   const savedProduct = await product.save();
   return jsendSuccess(res, { product: savedProduct }, 201);
@@ -60,10 +60,24 @@ const updateProduct = asyncWrapper(async (req, res) => {
     throw new AppError("Cannot update SKU", 400);
   }
 
-  const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
+  const { name, desc, price, discount, categories, options } = req.body;
+  const images = req.files.map((file) => file.filename);
+  const product = await Product.findByIdAndUpdate(
+    req.params.id,
+    {
+      name,
+      desc,
+      price,
+      discount,
+      categories,
+      options,
+      images,
+    },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
 
   if (!product) {
     throw new AppError("Product not found", 404);
