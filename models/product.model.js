@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema(
     desc: { type: String, required: true, trim: true },
     price: { type: Number, required: true, min: 0 },
     categories: [{ type: String, required: true, trim: true }],
-    imagesFolder: { type: String, required: true },
+    uploadPath: { type: String, required: true },
     images: [{ type: String, required: true }],
     rating: { type: Number, min: 0, max: 5, default: 0 },
     reviews: {

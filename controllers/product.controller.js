@@ -3,12 +3,14 @@ import Product from "../models/product.model.js";
 import { jsendSuccess } from "../utils/jsend.js";
 import AppError from "../utils/appError.js";
 import asyncWrapper from "../middlewares/asyncWrapper.js";
+import removePath from "../utils/removePath.js";
 
 const addProduct = asyncWrapper(async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
+  const uploadPath = req.uploadPath;
   const { name, desc, price, discount, categories, options } = req.body;
   const images = req.files.map((file) => file.filename);
   const product = new Product({
@@ -19,6 +21,7 @@ const addProduct = asyncWrapper(async (req, res) => {
     options,
     categories,
     images,
+    uploadPath
   });
   const savedProduct = await product.save();
   return jsendSuccess(res, { product: savedProduct }, 201);
@@ -55,6 +58,8 @@ const updateProduct = asyncWrapper(async (req, res) => {
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
+  
+  const id = req.params.id;
 
   if (req.body.SKU) {
     throw new AppError("Cannot update SKU", 400);
@@ -62,6 +67,11 @@ const updateProduct = asyncWrapper(async (req, res) => {
 
   const { name, desc, price, discount, categories, options } = req.body;
   const images = req.files.map((file) => file.filename);
+  if (images) {
+    const oldUploadPath = await product.findById(id,
+    )
+  await  removePath()
+  }
   const product = await Product.findByIdAndUpdate(
     req.params.id,
     {

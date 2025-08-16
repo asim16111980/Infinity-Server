@@ -16,6 +16,9 @@ const diskStorage = multer.diskStorage({
       uploadPath = path.join(uploadPath, safePrefix(req));
     }
 
+    uploadPath = `${uploadPath}-${req.uniquePrefix}`;
+    req.uploadPath = uploadPath;
+
     fs.mkdirSync(uploadPath, { recursive: true });
     cb(null, uploadPath);
   },

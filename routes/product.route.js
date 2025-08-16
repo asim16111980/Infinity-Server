@@ -21,21 +21,21 @@ router
   .route("/")
   .get(getProducts)
   .post(
-    createProductRules,
-    validateRequest,
     configureImageUpload("products", "name", true),
     upload.array("productImages", 12),
     checkImages,
+    createProductRules,
+    validateRequest,
     addProduct
   );
 router
   .route("/:id")
   .get(getProductById)
   .patch(
-    updateProductRules,
-    validateRequest,
     configureImageUpload("products", "name", true),
     upload.array("productImages", 12),
+    updateProductRules,
+    validateRequest,
     updateProduct
   )
   .delete(deleteProduct);

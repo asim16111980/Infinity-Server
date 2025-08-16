@@ -20,11 +20,11 @@ router
   .route("/")
   .get(getCategories)
   .post(
+    configureImageUpload("categories", "name"),
+    checkImages,
+    upload.single("thumbnail"),
     createCategoryRules,
     validateRequest,
-    configureImageUpload("categories", "name"),
-    upload.single("thumbnail"),
-    checkImages,
     addCategory
   );
 
@@ -32,10 +32,10 @@ router
   .route("/:id")
   .get(getCategoryById)
   .patch(
-    updateCategoryRules,
-    validateRequest,
     configureImageUpload("categories", "name"),
     upload.single("thumbnail"),
+    updateCategoryRules,
+    validateRequest,
     updateCategory
   );
 
