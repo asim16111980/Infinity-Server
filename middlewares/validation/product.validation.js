@@ -19,11 +19,6 @@ const baseProductRules = {
     .custom((arr) => arr.every((cat) => typeof cat === "string"))
     .trim(),
 
-  uploadPath: body("uploadPath")
-    .isString()
-    .withMessage("Upload Path must be a string")
-    .trim(),
-
   rating: body("rating")
     .optional()
     .isFloat({ min: 0, max: 5 })

@@ -1,18 +1,17 @@
 import fs from "fs/promises";
+import AppError from "./appError.js";
+import path from "path";
 
-async function removePath(path) {
+async function removePath(dirPath,fileName=null) {
   try {
-    const stats = await fs.lstat(path);
 
-    if (stats.isDirectory()) {
-      await fs.rm(path, { recursive: true, force: true });
-      console.log(`Folder removed: ${path}`);
+    if (fileName===null) {
+      await fs.rm(dirPath, { recursive: true, force: true });
     } else {
-      await fs.rm(path, { force: true });
-      console.log(`File removed: ${path}`);
+      await fs.rm(path.join(dirPath,fileName), { force: true });
     }
   } catch (err) {
-    console.error("Error removing:", err.message);
+    throw new AppError(`Error removing path: ${err.message}`, 500);
   }
 }
 export default removePath;

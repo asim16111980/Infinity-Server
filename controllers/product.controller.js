@@ -10,19 +10,25 @@ const addProduct = asyncWrapper(async (req, res) => {
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
-  const uploadPath = req.uploadPath;
+
   const { name, desc, price, discount, categories, options } = req.body;
-  const images = req.files.map((file) => file.filename);
-  const product = new Product({
+  const images = req.files?.map((file) => file.filename) || [];
+  const updateData = {
     name,
     desc,
     price,
     discount,
-    options,
     categories,
-    images,
-    uploadPath
-  });
+    options,
+  };
+
+  if (images.length > 0) {
+    updateData.images = images;
+    updateData.uploadPath = req.uploadPath;
+  }
+
+  const product = new Product(updateData);
+
   const savedProduct = await product.save();
   return jsendSuccess(res, { product: savedProduct }, 201);
 });
@@ -58,7 +64,7 @@ const updateProduct = asyncWrapper(async (req, res) => {
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
-  
+
   const id = req.params.id;
 
   if (req.body.SKU) {
@@ -66,31 +72,32 @@ const updateProduct = asyncWrapper(async (req, res) => {
   }
 
   const { name, desc, price, discount, categories, options } = req.body;
-  const images = req.files.map((file) => file.filename);
-  if (images) {
-    const oldUploadPath = await product.findById(id,
-    )
-  await  removePath()
+  const images = req.files?.map((file) => file.filename) || [];
+  const updateData = {
+    name,
+    desc,
+    price,
+    discount,
+    categories,
+    options,
+  };
+
+  if (images.length > 0) {
+    updateData.images = images;
+    updateData.uploadPath = req.uploadPath;
   }
-  const product = await Product.findByIdAndUpdate(
-    req.params.id,
-    {
-      name,
-      desc,
-      price,
-      discount,
-      categories,
-      options,
-      images,
-    },
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+
+  const product = await Product.findByIdAndUpdate(req.params.id, updateData, {
+    runValidators: true,
+  });
 
   if (!product) {
     throw new AppError("Product not found", 404);
+  }
+
+  if (req.files && req.files.length > 0) {
+    const oldUploadPath = product.uploadPath;
+    await removePath(oldUploadPath);
   }
 
   return jsendSuccess(res, { product });
@@ -101,6 +108,10 @@ const deleteProduct = asyncWrapper(async (req, res) => {
   if (!product) {
     throw new AppError("Product not found", 404);
   }
+
+  const oldUploadPath = product.uploadPath;
+  await removePath(oldUploadPath);
+
   return jsendSuccess(res, { product });
 });
 

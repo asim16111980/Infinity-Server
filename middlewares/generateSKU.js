@@ -8,7 +8,6 @@ export function generateSKU(productNameKey = "productName") {
     const sku = `${namePart}-${uniquePart}-${Date.now()}`;
 
     req.generatedSKU = sku; 
-    //  req.body.SKU = sku; 
     next();
   };
 }

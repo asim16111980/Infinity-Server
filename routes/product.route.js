@@ -27,7 +27,8 @@ router
     createProductRules,
     validateRequest,
     addProduct
-  );
+);
+  
 router
   .route("/:id")
   .get(getProductById)
