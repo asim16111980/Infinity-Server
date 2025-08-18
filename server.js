@@ -2,20 +2,20 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import mongoose from "mongoose";
-import productRouter from "./routes/product.route.js";
-import categoryRouter from "./routes/category.route.js";
-import { jsendFail } from "./utils/jsend.js";
+import productsRouter from "./routes/products.route.js";
+import categoriesRouter from "./routes/categories.route.js";
+import usersRouter from "./routes/users.route.js";
+import { jsendFail, jsendError } from "./utils/jsend.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import AppError from "./utils/appError.js";
-import { jsendError } from "./utils/jsend.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.post('/test', (req, res) => {
+app.post("/test", (req, res) => {
   console.log(req.body);
   res.send(req.body);
 });
@@ -23,8 +23,9 @@ app.post('/test', (req, res) => {
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cors());
 app.use(express.json());
-app.use("/api/products", productRouter);
-app.use("/api/categories", categoryRouter);
+app.use("/api/products", productsRouter);
+app.use("/api/categories", categoriesRouter);
+app.use("/api/users", usersRouter);
 
 app.all("*", (req, res) => {
   return jsendFail(res, { message: "Not Found" }, 404);

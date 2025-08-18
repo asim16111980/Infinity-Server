@@ -44,6 +44,7 @@ const getProducts = asyncWrapper(async (req, res) => {
   )
     .limit(limit)
     .skip(skip);
+  
   return jsendSuccess(res, { products });
 });
 
@@ -53,9 +54,11 @@ const getProductById = asyncWrapper(async (req, res) => {
     createdAt: 0,
     updatedAt: 0,
   });
+
   if (!product) {
     throw new AppError("Product not found", 404);
   }
+  
   return jsendSuccess(res, { product });
 });
 

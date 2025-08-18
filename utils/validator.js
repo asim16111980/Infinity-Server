@@ -1,11 +1,10 @@
 import validator from "validator";
 
-export const validator = {
-  validateNameLength: (value) =>
-    validator.isLength(value, { min: 2, max: 100 }),
-  validateUserName: (value) => validator.isAlphanumeric(value, "en-US"),
-  validateEmail: (value) => validator.isEmail(value),
-  validatePassword: (value) =>
+export const validate = {
+  nameLength: (value) => validator.isLength(value, { min: 2, max: 100 }),
+  userName: (value) => validator.isAlphanumeric(value, "en-US"),
+  email: (value) => validator.isEmail(value),
+  password: (value) =>
     validator.isStrongPassword(value, {
       minLength: 8,
       minLowercase: 1,
@@ -13,6 +12,6 @@ export const validator = {
       minNumbers: 1,
       minSymbols: 1,
     }),
-  validatePhone: (value) => validator.isMobilePhone(value, "any"),
-  validateZipCode: (value) => validator.isPostalCode(value, "any"),
+  phone: (value) => validator.isMobilePhone(value, "any"),
+  zipCode: (value) => validator.isPostalCode(value, "any"),
 };
