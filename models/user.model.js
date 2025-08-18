@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { validate } from "../utils/validator.js";
+import _default from "validator";
 
 const addressSchema = new mongoose.Schema(
   {
@@ -65,7 +66,7 @@ const userSchema = new mongoose.Schema(
       validate: [validate.password, "Weak password"],
       required: true,
     },
-    avatar: { type: String, required: true },
+    avatar: { type: String, _default: "default_avatar.png", required: true },
     billingAddress: addressSchema,
     shippingAddress: addressSchema,
   },
