@@ -1,9 +1,10 @@
 import express from "express";
-import configureImageUpload from "../middleware/configureImageUpload.js";
-import upload from "../middleware/upload.js";
-import { checkImage } from "../controllers/auth.controller.js";
+import configureImageUpload from "../middlewares/configureImageUpload.js";
+import upload from "../utils/uploadImage.js";
+import { checkImages } from "../middlewares/validation/checkImages.js";
 import { registerUserRules } from "../middlewares/validation/user.validation.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
+import { register } from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
@@ -12,7 +13,6 @@ router
   .post(
     configureImageUpload("users", "name"),
     upload.single("avatar"),
-    checkImage,
     registerUserRules,
     validateRequest,
     register

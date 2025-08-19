@@ -10,10 +10,10 @@ import {
   updateProduct,
   deleteProduct,
 } from "../controllers/product.controller.js";
-import upload from "../utils/uploadImage.js";
-import { validateRequest } from "../middlewares/validation/validateRequest.js";
-import { checkImages } from "../middlewares/validation/checkImages.js";
 import configureImageUpload from "../middlewares/configureImageUpload.js";
+import upload from "../utils/uploadImage.js";
+import { checkImages } from "../middlewares/validation/checkImages.js";
+import { validateRequest } from "../middlewares/validation/validateRequest.js";
 
 const router = express.Router();
 

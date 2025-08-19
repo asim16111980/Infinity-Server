@@ -1,17 +1,7 @@
 import { body } from "express-validator";
 
 const baseUserRules = {
-  firstName: body("firstName")
-    .isString()
-    .withMessage("First name must be a string")
-    .trim(),
-
-  lastName: body("lastName")
-    .isString()
-    .withMessage("Last name must be a string")
-    .trim(),
-
-  displayName: body("displayName")
+  name: body("name")
     .isString()
     .withMessage("Your name must be a string")
     .trim(),
@@ -28,33 +18,51 @@ const baseUserRules = {
     .withMessage("Password must be a string")
     .trim(),
 
+  firstName: body("firstName")
+    .optional()
+    .isString()
+    .withMessage("First name must be a string")
+    .trim(),
+
+  lastName: body("lastName")
+    .optional()
+    .isString()
+    .withMessage("Last name must be a string")
+    .trim(),
+
   billingAddress: {
     fullName: body("billingAddress.fullName")
+      .optional()
       .isString()
       .withMessage("Full name must be a string")
       .trim(),
 
     country: body("billingAddress.country")
+      .optional()
       .isString()
       .withMessage("Country must be a string")
       .trim(),
 
     city: body("billingAddress.city")
+      .optional()
       .isString()
       .withMessage("City must be a string")
       .trim(),
 
     street: body("billingAddress.street")
+      .optional()
       .isString()
       .withMessage("Street must be a string")
       .trim(),
 
     zipCode: body("billingAddress.zipCode")
+      .optional()
       .isString()
       .withMessage("Zip code must be a string")
       .trim(),
 
     phoneNumber: body("billingAddress.phoneNumber")
+      .optional()
       .isString()
       .withMessage("Phone number must be a string")
       .trim(),
@@ -62,11 +70,11 @@ const baseUserRules = {
 };
 
 export const registerUserRules = [
+  baseUserRules.name.notEmpty().withMessage("Your name is required"),
   baseUserRules.userName.notEmpty().withMessage("User name is required"),
   baseUserRules.email.notEmpty().withMessage("Email is required"),
   baseUserRules.password.notEmpty().withMessage("Password is required"),
   baseUserRules.firstName,
   baseUserRules.lastName,
-  baseUserRules.displayName,
-  baseUserRules.billingAddress,
+  ...Object.values(baseUserRules.billingAddress),
 ];

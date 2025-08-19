@@ -7,28 +7,23 @@ const addressSchema = new mongoose.Schema(
     fullName: {
       type: String,
       validate: [validate.nameLength, "Full name must be 2-100 chars"],
-      required: true,
     },
-    country: { type: String, required: true },
+    country: { type: String },
     city: {
       type: String,
       validate: [validate.nameLength, "City must be 2-100 chars"],
-      required: true,
     },
     street: {
       type: String,
       validate: [validate.nameLength, "Street must be 2-100 chars"],
-      required: true,
     },
     zipCode: {
       type: String,
       validate: [validate.zipCode, "Invalid zip code"],
-      required: true,
     },
     phoneNumber: {
       type: String,
       validate: [validate.phone, "Invalid phone number"],
-      required: true,
     },
   },
   { _id: false }
@@ -36,15 +31,7 @@ const addressSchema = new mongoose.Schema(
 
 const userSchema = new mongoose.Schema(
   {
-    firstName: {
-      type: String,
-      validate: [validate.nameLength, "Invalid first name"],
-    },
-    lastName: {
-      type: String,
-      validate: [validate.nameLength, "Invalid last name"],
-    },
-    displayName: {
+    name: {
       type: String,
       validate: [validate.nameLength, "Invalid display name"],
       required: true,
@@ -66,9 +53,20 @@ const userSchema = new mongoose.Schema(
       validate: [validate.password, "Weak password"],
       required: true,
     },
-    avatar: { type: String, _default: "default_avatar.png", required: true },
-    billingAddress: addressSchema,
-    shippingAddress: addressSchema,
+    uploadPath: { type: String, required: true },
+    avatar: { type: String, default: "default_avatar.png" },
+    firstName: {
+      type: String,
+      validate: [validate.nameLength, "Invalid first name"],
+      default: "",
+    },
+    lastName: {
+      type: String,
+      validate: [validate.nameLength, "Invalid last name"],
+      default: "",
+    },
+    billingAddress: { type: addressSchema, default: {} },
+    shippingAddress: { type: addressSchema, default: {} },
   },
   { timestamps: true }
 );

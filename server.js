@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import productsRouter from "./routes/products.route.js";
 import categoriesRouter from "./routes/categories.route.js";
 import usersRouter from "./routes/users.route.js";
+import authRouter from "./routes/auth.route.js";
 import { jsendFail, jsendError } from "./utils/jsend.js";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/auth", authRouter);
 
 app.all("*", (req, res) => {
   return jsendFail(res, { message: "Not Found" }, 404);
