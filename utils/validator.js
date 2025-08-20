@@ -5,7 +5,7 @@ export const validate = {
     if (!value) return true;
     return validator.isLength(value, { min: 2, max: 100 });
   },
-  userName: (value) => validator.isAlphanumeric(value, "en-US"),
+  username: (value) => validator.isAlphanumeric(value, "en-US"),
   email: (value) => validator.isEmail(value),
   password: (value) =>
     validator.isStrongPassword(value, {

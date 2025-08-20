@@ -1,8 +1,10 @@
 import express from "express";
 import configureImageUpload from "../middlewares/configureImageUpload.js";
 import upload from "../utils/uploadImage.js";
-import { checkImages } from "../middlewares/validation/checkImages.js";
-import { registerUserRules } from "../middlewares/validation/user.validation.js";
+import {
+  loginUserRules,
+  registerUserRules,
+} from "../middlewares/validation/user.validation.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
 import { register } from "../controllers/auth.controller.js";
 
@@ -17,5 +19,7 @@ router
     validateRequest,
     register
   );
+
+router.route("/login").post(loginUserRules, validateRequest, login);
 
 export default router;

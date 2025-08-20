@@ -6,7 +6,7 @@ const baseUserRules = {
     .withMessage("Your name must be a string")
     .trim(),
 
-  userName: body("userName")
+  username: body("username")
     .isString()
     .withMessage("User name must be a string")
     .trim(),
@@ -71,10 +71,13 @@ const baseUserRules = {
 
 export const registerUserRules = [
   baseUserRules.name.notEmpty().withMessage("Your name is required"),
-  baseUserRules.userName.notEmpty().withMessage("User name is required"),
+  baseUserRules.username.notEmpty().withMessage("User name is required"),
   baseUserRules.email.notEmpty().withMessage("Email is required"),
   baseUserRules.password.notEmpty().withMessage("Password is required"),
-  baseUserRules.firstName,
-  baseUserRules.lastName,
-  ...Object.values(baseUserRules.billingAddress),
+];
+
+export const loginUserRules = [
+  baseUserRules.username.optional(),
+  baseUserRules.email.optional(),
+  baseUserRules.password.notEmpty().withMessage("Password is required"),
 ];

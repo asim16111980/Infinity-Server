@@ -36,9 +36,9 @@ const userSchema = new mongoose.Schema(
       validate: [validate.nameLength, "Invalid display name"],
       required: true,
     },
-    userName: {
+    username: {
       type: String,
-      validate: [validate.userName, "Invalid username"],
+      validate: [validate.username, "Invalid username"],
       unique: true,
       required: true,
     },
