@@ -11,7 +11,7 @@ import {
   deleteProduct,
 } from "../controllers/product.controller.js";
 import configureImageUpload from "../middlewares/configureImageUpload.js";
-import upload from "../utils/uploadImage.js";
+import upload from "../middlewares/uploadImage.js";
 import { checkImages } from "../middlewares/validation/checkImages.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
 

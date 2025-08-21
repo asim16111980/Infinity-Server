@@ -12,6 +12,7 @@ const register = asyncWrapper(async (req, res) => {
   }
 
   const { name, username, email, password } = req.body;
+
   let oldUser = await User.findOne({ username });
   if (oldUser) {
     throw new AppError("User with this username already exists", 400);
@@ -22,37 +23,44 @@ const register = asyncWrapper(async (req, res) => {
     }
   }
 
+  const newData = { name, username, email };
   const hashedPassword = await bcrypt.hash(password, 10);
-  const avatar = req.file?.filename || "";
-  const updateData = {
-    name,
-    username,
-    email,
-    hashedPassword,
-    avatar,
-  };
+  newData.password = hashedPassword;
+  newData.uploadPath = req.uploadPath;
 
+  const avatar = req.file?.filename || "";
   if (avatar) {
-    updateData.avatar = avatar;
-    updateData.uploadPath = req.uploadPath;
+    newData.avatar = avatar;
   }
 
-  const user = new User(updateData);
+  const user = new User(newData);
 
   const savedUser = await user.save();
   return jsendSuccess(res, { user: savedUser }, 201);
 });
 
-const login = asyncWrapper(async(req, res, next) => {
+const login = asyncWrapper(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
 
   const { username, email, password } = req.body;
-  if (username !== "") {
-    
-  }
-})
 
-export { register,login };
+  let foundUser;
+  if (username !== "") {
+    foundUser = await User.findOne({ username });
+  } else {
+    foundUser = await User.findOne({ email });
+  }
+
+  const matchedPassword = await bcrypt.compare(password, foundUser.password);
+
+  if (foundUser && matchedPassword) {
+    return jsendSuccess(res, { user: foundUser }, 200);
+  } else {
+    throw new AppError("error", 500);
+  }
+});
+
+export { register, login };

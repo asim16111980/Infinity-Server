@@ -11,17 +11,17 @@ const addCategory = asyncWrapper(async (req, res) => {
   }
   const { name, visibility } = req.body;
   const thumbnail = req.file?.filename || "";
-  const updateData = {
+  const newData = {
     name,
     visibility,
   };
 
   if (thumbnail) {
-    updateData.thumbnail = thumbnail;
-    updateData.uploadPath = req.uploadPath;
+    newData.thumbnail = thumbnail;
+    newData.uploadPath = req.uploadPath;
   }
 
-  const category = new Category(updateData);
+  const category = new Category(newData);
   const savedCategory = await category.save();
   return jsendSuccess(res, { category: savedCategory }, 201);
 });

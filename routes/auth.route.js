@@ -1,12 +1,12 @@
 import express from "express";
 import configureImageUpload from "../middlewares/configureImageUpload.js";
-import upload from "../utils/uploadImage.js";
+import upload from "../middlewares/uploadImage.js";
 import {
   loginUserRules,
   registerUserRules,
 } from "../middlewares/validation/user.validation.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
-import { register } from "../controllers/auth.controller.js";
+import { register, login } from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
@@ -20,6 +20,8 @@ router
     register
   );
 
-router.route("/login").post(loginUserRules, validateRequest, login);
+router
+  .route("/login")
+  .post(upload.none(), loginUserRules, validateRequest, login);
 
 export default router;

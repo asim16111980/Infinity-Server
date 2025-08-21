@@ -13,7 +13,7 @@ const addProduct = asyncWrapper(async (req, res) => {
 
   const { name, desc, price, discount, categories, options } = req.body;
   const images = req.files?.map((file) => file.filename) || [];
-  const updateData = {
+  const newData = {
     name,
     desc,
     price,
@@ -23,11 +23,11 @@ const addProduct = asyncWrapper(async (req, res) => {
   };
 
   if (images.length > 0) {
-    updateData.images = images;
-    updateData.uploadPath = req.uploadPath;
+    newData.images = images;
+    newData.uploadPath = req.uploadPath;
   }
 
-  const product = new Product(updateData);
+  const product = new Product(newData);
 
   const savedProduct = await product.save();
   return jsendSuccess(res, { product: savedProduct }, 201);

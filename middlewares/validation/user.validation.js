@@ -2,18 +2,33 @@ import { body } from "express-validator";
 
 const baseUserRules = {
   name: body("name")
+    .notEmpty()
+    .withMessage("Your name is required")
+    .bail()
     .isString()
     .withMessage("Your name must be a string")
     .trim(),
 
   username: body("username")
+    .notEmpty()
+    .withMessage("User name is required")
+    .bail()
     .isString()
     .withMessage("User name must be a string")
     .trim(),
 
-  email: body("email").isEmail().withMessage("Invalid email"),
+  email: body("email")
+    .notEmpty()
+    .withMessage("Email is required")
+    .bail()
+    .isEmail()
+    .withMessage("Invalid email")
+    .trim(),
 
   password: body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .bail()
     .isString()
     .withMessage("Password must be a string")
     .trim(),
@@ -69,15 +84,17 @@ const baseUserRules = {
   },
 };
 
+// Register rules
 export const registerUserRules = [
-  baseUserRules.name.notEmpty().withMessage("Your name is required"),
-  baseUserRules.username.notEmpty().withMessage("User name is required"),
-  baseUserRules.email.notEmpty().withMessage("Email is required"),
-  baseUserRules.password.notEmpty().withMessage("Password is required"),
+  baseUserRules.name,
+  baseUserRules.username,
+  baseUserRules.email,
+  baseUserRules.password,
 ];
 
+// Login rules
 export const loginUserRules = [
   baseUserRules.username.optional(),
   baseUserRules.email.optional(),
-  baseUserRules.password.notEmpty().withMessage("Password is required"),
+  baseUserRules.password,
 ];

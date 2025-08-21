@@ -10,17 +10,14 @@ const safePrefix = (req) => {
 
 const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let uploadPath = path.join("uploads", req.imageUploadFolderName);
 
     if (req.useSubFoldersForImages) {
-      uploadPath = path.join(uploadPath, safePrefix(req));
+      req.uploadPath =
+        path.join(uploadPath, safePrefix(req)) + `-${req.uniquePrefix}`;
     }
 
-    uploadPath = `${uploadPath}-${req.uniquePrefix}`;
-    req.uploadPath = uploadPath;
-
-    fs.mkdirSync(uploadPath, { recursive: true });
-    cb(null, uploadPath);
+    fs.mkdirSync(req.uploadPath, { recursive: true });
+    cb(null, req.uploadPath);
   },
 
   filename: (req, file, cb) => {

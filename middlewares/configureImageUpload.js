@@ -1,11 +1,12 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
+import path from "path";
 const configureImageUpload =
   (folderName, fieldName, useSubFolders = false) =>
   (req, res, next) => {
-    req.imageUploadFolderName = folderName;
     req.imageUploadFieldName = fieldName;
     req.useSubFoldersForImages = useSubFolders;
     req.uniquePrefix = uuidv4();
+    req.uploadPath = path.join("uploads", folderName);
     next();
   };
 

@@ -9,7 +9,7 @@ import {
   addCategory,
   updateCategory,
 } from "../controllers/category.controller.js";
-import upload from "../utils/uploadImage.js";
+import upload from "../middlewares/uploadImage.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
 import { checkImages } from "../middlewares/validation/checkImages.js";
 import configureImageUpload from "../middlewares/configureImageUpload.js";

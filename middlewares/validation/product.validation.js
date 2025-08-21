@@ -1,23 +1,30 @@
 import { body } from "express-validator";
 
 const baseProductRules = {
-  name: body("name").isString().withMessage("Name must be a string").trim(),
+  name: body("name")
+    .isString()
+    .withMessage("Name must be a string")
+    .bail()
+    .trim(),
 
   desc: body("desc")
     .isString()
     .withMessage("Description must be a string")
+    .bail()
     .trim(),
 
   price: body("price")
     .isFloat({ min: 0 })
-    .withMessage("Price must be a number >= 0"),
+    .withMessage("Price must be a number >= 0")
+    .bail(),
 
   categories: body("categories")
     .toArray()
     .isArray()
     .withMessage("Categories must be an array")
+    .bail()
     .custom((arr) => arr.every((cat) => typeof cat === "string"))
-    .trim(),
+    .withMessage("Each category must be a string"),
 
   rating: body("rating")
     .optional()
@@ -39,6 +46,7 @@ const baseProductRules = {
     .optional()
     .isString()
     .withMessage("Review comment must be a string")
+    .bail()
     .notEmpty()
     .withMessage("Review comment is required"),
 
@@ -52,6 +60,7 @@ const baseProductRules = {
     .toArray()
     .isArray()
     .withMessage("Options must be an array of arrays")
+    .bail()
     .custom((options) =>
       options.every(
         (opt) => Array.isArray(opt) && opt.every((o) => typeof o === "string")
@@ -61,7 +70,8 @@ const baseProductRules = {
 
   stock: body("stock")
     .isInt({ min: 0 })
-    .withMessage("Stock must be an integer >= 0"),
+    .withMessage("Stock must be an integer >= 0")
+    .bail(),
 
   discount: body("discount")
     .optional()
