@@ -4,7 +4,8 @@ import AppError from "../utils/appError.js";
 import { jsendSuccess } from "../utils/jsend.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
-import { jwt } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import { generateJWT } from "../utils/generateJWT.js";
 
 const register = asyncWrapper(async (req, res) => {
   const errors = validationResult(req);
@@ -36,8 +37,8 @@ const register = asyncWrapper(async (req, res) => {
 
   const newUser = new User(newData);
 
-  const payload = { id: newUser._id, name: newUser.name };
-  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY,{expiresIn:});
+  const payload = { id: newUser._id, username: newUser.username };
+  const token = generateJWT(payload);
 
   newUser.token = token;
 
@@ -60,10 +61,12 @@ const login = asyncWrapper(async (req, res, next) => {
     foundUser = await User.findOne({ email });
   }
 
+  const payload = { id: foundUser._id, username: foundUser.username };
   const matchedPassword = await bcrypt.compare(password, foundUser.password);
 
   if (foundUser && matchedPassword) {
-    return jsendSuccess(res, { user: foundUser }, 200);
+    const token = generateJWT(payload);
+    return jsendSuccess(res, {  token }, 200);
   } else {
     throw new AppError("error", 500);
   }

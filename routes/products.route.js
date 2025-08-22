@@ -14,6 +14,7 @@ import configureImageUpload from "../middlewares/configureImageUpload.js";
 import upload from "../middlewares/uploadImage.js";
 import { checkImages } from "../middlewares/validation/checkImages.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
+import { verifyToken } from "../middlewares/verifyToken.js";
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ router
   .route("/")
   .get(getProducts)
   .post(
+    verifyToken,
     configureImageUpload("products", "name", true),
     upload.array("productImages", 12),
     checkImages,

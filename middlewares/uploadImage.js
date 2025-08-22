@@ -13,7 +13,7 @@ const diskStorage = multer.diskStorage({
 
     if (req.useSubFoldersForImages) {
       req.uploadPath =
-        path.join(uploadPath, safePrefix(req)) + `-${req.uniquePrefix}`;
+        path.join(req.uploadPath, safePrefix(req)) + `-${req.uniquePrefix}`;
     }
 
     fs.mkdirSync(req.uploadPath, { recursive: true });
