@@ -65,6 +65,7 @@ const userSchema = new mongoose.Schema(
       validate: [validate.nameLength, "Invalid last name"],
       default: "",
     },
+    token: { type: String },
     billingAddress: { type: addressSchema, default: {} },
     shippingAddress: { type: addressSchema, default: {} },
   },

@@ -4,6 +4,7 @@ import AppError from "../utils/appError.js";
 import { jsendSuccess } from "../utils/jsend.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
+import { jwt } from "jsonwebtoken";
 
 const register = asyncWrapper(async (req, res) => {
   const errors = validationResult(req);
@@ -33,9 +34,14 @@ const register = asyncWrapper(async (req, res) => {
     newData.avatar = avatar;
   }
 
-  const user = new User(newData);
+  const newUser = new User(newData);
 
-  const savedUser = await user.save();
+  const payload = { id: newUser._id, name: newUser.name };
+  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY,{expiresIn:});
+
+  newUser.token = token;
+
+  const savedUser = await newUser.save();
   return jsendSuccess(res, { user: savedUser }, 201);
 });
 
