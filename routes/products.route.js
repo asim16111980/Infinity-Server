@@ -15,6 +15,8 @@ import upload from "../middlewares/uploadImage.js";
 import { checkImages } from "../middlewares/validation/checkImages.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
+import { checkRole } from "../middlewares/checkRole.js";
+import { USER_ROLES } from "../utils/userRoles.js";
 
 const router = express.Router();
 
@@ -23,6 +25,7 @@ router
   .get(getProducts)
   .post(
     verifyToken,
+    checkRole(USER_ROLES.ADMIN),
     configureImageUpload("products", "name", true),
     upload.array("productImages", 12),
     checkImages,

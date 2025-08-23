@@ -13,7 +13,7 @@ const register = asyncWrapper(async (req, res) => {
     throw new AppError("Validation failed", 400);
   }
 
-  const { name, username, email, password } = req.body;
+  const { name, username, email, password, role } = req.body;
 
   let oldUser = await User.findOne({ username });
   if (oldUser) {
@@ -25,7 +25,7 @@ const register = asyncWrapper(async (req, res) => {
     }
   }
 
-  const newData = { name, username, email };
+  const newData = { name, username, email, role };
   const hashedPassword = await bcrypt.hash(password, 10);
   newData.password = hashedPassword;
   newData.uploadPath = req.uploadPath;
@@ -37,7 +37,11 @@ const register = asyncWrapper(async (req, res) => {
 
   const newUser = new User(newData);
 
-  const payload = { id: newUser._id, username: newUser.username };
+  const payload = {
+    id: newUser._id,
+    username: newUser.username,
+    role: newUser.role,
+  };
   const token = generateJWT(payload);
 
   newUser.token = token;
@@ -61,12 +65,16 @@ const login = asyncWrapper(async (req, res, next) => {
     foundUser = await User.findOne({ email });
   }
 
-  const payload = { id: foundUser._id, username: foundUser.username };
+  const payload = {
+    id: foundUser._id,
+    username: foundUser.username,
+    role: foundUser.role,
+  };
   const matchedPassword = await bcrypt.compare(password, foundUser.password);
 
   if (foundUser && matchedPassword) {
     const token = generateJWT(payload);
-    return jsendSuccess(res, {  token }, 200);
+    return jsendSuccess(res, { token }, 200);
   } else {
     throw new AppError("error", 500);
   }
