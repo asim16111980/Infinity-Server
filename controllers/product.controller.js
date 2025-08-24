@@ -26,7 +26,7 @@ const addProduct = asyncWrapper(async (req, res) => {
     newData.images = images;
     newData.uploadPath = req.uploadPath;
   }
-
+  newData.SKU = req.SKU;
   const product = new Product(newData);
 
   const savedProduct = await product.save();
@@ -44,7 +44,7 @@ const getProducts = asyncWrapper(async (req, res) => {
   )
     .limit(limit)
     .skip(skip);
-  
+
   return jsendSuccess(res, { products });
 });
 
@@ -58,7 +58,7 @@ const getProductById = asyncWrapper(async (req, res) => {
   if (!product) {
     throw new AppError("Product not found", 404);
   }
-  
+
   return jsendSuccess(res, { product });
 });
 

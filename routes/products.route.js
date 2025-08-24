@@ -16,7 +16,8 @@ import { checkImages } from "../middlewares/validation/checkImages.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
 import { checkRole } from "../middlewares/checkRole.js";
-import { USER_ROLES } from "../utils/userRoles.js";
+import { USER_ROLES } from "../constants/userRoles.js";
+import { generateSKU } from "../middlewares/generateSKU.js";
 
 const router = express.Router();
 
@@ -31,9 +32,10 @@ router
     checkImages,
     createProductRules,
     validateRequest,
+    generateSKU(),
     addProduct
-);
-  
+  );
+
 router
   .route("/:id")
   .get(getProductById)

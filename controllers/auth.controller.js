@@ -4,7 +4,6 @@ import AppError from "../utils/appError.js";
 import { jsendSuccess } from "../utils/jsend.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { generateJWT } from "../utils/generateJWT.js";
 
 const register = asyncWrapper(async (req, res) => {

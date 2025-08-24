@@ -10,6 +10,7 @@ import { jsendFail, jsendError } from "./utils/jsend.js";
 import path from "path";
 import { fileURLToPath } from "url";
 import AppError from "./utils/appError.js";
+import { seedAdminOnStartup } from "./controllers/user.controller.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -48,6 +49,8 @@ const startServer = async () => {
     const uri = process.env.ATLAS_URI;
     await mongoose.connect(uri);
     console.log("MongoDB connected");
+
+    await seedAdminOnStartup();
 
     app.listen(port, () => {
       console.log("Server is running on port:", port);

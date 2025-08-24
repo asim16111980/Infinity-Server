@@ -1,4 +1,4 @@
-import httpStatusText from "./httpStatusText.js";
+import httpStatusText from "../constants/httpStatusText.js";
 
 export const jsendSuccess = (res, data, statusCode = 200) => {
   return res.status(statusCode).json({

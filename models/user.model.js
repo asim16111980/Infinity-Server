@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { validate } from "../utils/validator.js";
 import _default from "validator";
-import { USER_ROLES } from "../utils/userRoles.js";
+import { USER_ROLES } from "../constants/userRoles.js";
 
 const addressSchema = new mongoose.Schema(
   {
