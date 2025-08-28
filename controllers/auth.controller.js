@@ -64,19 +64,24 @@ const login = asyncWrapper(async (req, res, next) => {
     foundUser = await User.findOne({ email });
   }
 
+  if (!foundUser) {
+    throw new AppError("Invalid credentials", 401);
+  }
+
+  const matchedPassword = await bcrypt.compare(password, foundUser.password);
+  if (!matchedPassword) {
+    throw new AppError("Invalid credentials", 401);
+  }
+
   const payload = {
     id: foundUser._id,
     username: foundUser.username,
     role: foundUser.role,
   };
-  const matchedPassword = await bcrypt.compare(password, foundUser.password);
 
-  if (foundUser && matchedPassword) {
-    const token = generateJWT(payload);
-    return jsendSuccess(res, { token }, 200);
-  } else {
-    throw new AppError("error", 500);
-  }
+  const token = generateJWT(payload);
+  req.session.userId = foundUser._id;
+  return jsendSuccess(res, { token }, 200);
 });
 
 export { register, login };

@@ -11,6 +11,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import AppError from "./utils/appError.js";
 import { seedAdminOnStartup } from "./controllers/user.controller.js";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import { createSession } from "./middlewares/createSession.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -25,6 +28,9 @@ app.post("/test", (req, res) => {
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+app.use(helmet());
+app.use(createSession());
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
