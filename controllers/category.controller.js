@@ -66,7 +66,7 @@ const updateCategory = asyncWrapper(async (req, res) => {
     updateData.uploadPath = req.uploadPath;
   }
 
-  const category = await Category.findByIdAndUpdate(req.params.id, updateData, {
+  const category = await Category.findByIdAndUpdate(id, updateData, {
     runValidators: true,
   });
 

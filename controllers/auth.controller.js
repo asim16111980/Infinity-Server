@@ -5,6 +5,7 @@ import { jsendSuccess } from "../utils/jsend.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { generateJWT } from "../utils/generateJWT.js";
+import { createSession } from "../middlewares/createSession.js";
 
 const register = asyncWrapper(async (req, res) => {
   const errors = validationResult(req);
@@ -80,8 +81,10 @@ const login = asyncWrapper(async (req, res, next) => {
   };
 
   const token = generateJWT(payload);
+  const session = createSession();
+  console.log(session);
   req.session.userId = foundUser._id;
-  return jsendSuccess(res, { token }, 200);
+  return jsendSuccess(res, { token });
 });
 
 export { register, login };

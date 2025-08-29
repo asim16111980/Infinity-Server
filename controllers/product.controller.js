@@ -90,7 +90,7 @@ const updateProduct = asyncWrapper(async (req, res) => {
     updateData.uploadPath = req.uploadPath;
   }
 
-  const product = await Product.findByIdAndUpdate(req.params.id, updateData, {
+  const product = await Product.findByIdAndUpdate(id, updateData, {
     runValidators: true,
   });
 

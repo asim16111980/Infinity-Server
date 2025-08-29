@@ -30,7 +30,6 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
-app.use(createSession());
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
