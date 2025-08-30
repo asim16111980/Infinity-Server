@@ -82,10 +82,10 @@ const login = asyncWrapper(async (req, res, next) => {
   };
 
   const token = generateJWT(payload);
+  
   const sessionPayload = { userId: foundUser._id, role: foundUser.role };
   req.session.user = sessionPayload;
-
-  console.log(req.sessionId);
+  
   return jsendSuccess(res, { token });
 });
 

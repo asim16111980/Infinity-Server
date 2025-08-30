@@ -9,7 +9,7 @@ export const createSession = (store) => {
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7,
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "lax",
     },
   });
