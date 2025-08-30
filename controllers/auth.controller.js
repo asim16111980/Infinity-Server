@@ -51,6 +51,7 @@ const register = asyncWrapper(async (req, res) => {
 });
 
 const login = asyncWrapper(async (req, res, next) => {
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
@@ -81,9 +82,10 @@ const login = asyncWrapper(async (req, res, next) => {
   };
 
   const token = generateJWT(payload);
-  const session = createSession();
-  console.log(session);
-  req.session.userId = foundUser._id;
+  const sessionPayload = { userId: foundUser._id, role: foundUser.role };
+  req.session.user = sessionPayload;
+
+  console.log(req.sessionId);
   return jsendSuccess(res, { token });
 });
 

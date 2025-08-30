@@ -13,16 +13,17 @@ import AppError from "./utils/appError.js";
 import { seedAdminOnStartup } from "./controllers/user.controller.js";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import MongoStore from "connect-mongo";
 import { createSession } from "./middlewares/createSession.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-app.post("/test", (req, res) => {
-  console.log(req.body);
-  res.send(req.body);
+const mongoStore = MongoStore.create({
+  mongoUrl: process.env.ATLAS_URI,
+  collectionName: "sessions",
+  ttl: 60 * 60 * 24,
 });
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
@@ -30,11 +31,11 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
+app.use("/api/auth/login",createSession(mongoStore));
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
-
 app.all("*", (req, res) => {
   return jsendFail(res, { message: "Not Found" }, 404);
 });
