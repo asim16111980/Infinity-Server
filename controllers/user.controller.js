@@ -17,8 +17,6 @@ const seedAdminOnStartup = async () => {
     const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
 
     const adminData = {
-      name: "Super Admin",
-      username: "SuperAdmin",
       email: process.env.ADMIN_EMAIL,
       password: hashedPassword,
       uploadPath: path.join("uploads", "users"),
@@ -29,7 +27,7 @@ const seedAdminOnStartup = async () => {
 
     const payload = {
       id: newUser._id,
-      username: newUser.username,
+      email: newUser.email,
       role: newUser.role,
     };
 

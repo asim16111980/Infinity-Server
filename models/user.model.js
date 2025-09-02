@@ -32,16 +32,15 @@ const addressSchema = new mongoose.Schema(
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
+     firstName: {
       type: String,
-      validate: [validate.nameLength, "Invalid display name"],
-      required: true,
+      validate: [validate.nameLength, "Invalid first name"],
+      default: "",
     },
-    username: {
+    lastName: {
       type: String,
-      validate: [validate.username, "Invalid username"],
-      unique: true,
-      required: true,
+      validate: [validate.nameLength, "Invalid last name"],
+      default: "",
     },
     email: {
       type: String,
@@ -56,16 +55,7 @@ const userSchema = new mongoose.Schema(
     },
     uploadPath: { type: String, required: true },
     avatar: { type: String, default: "default_avatar.png" },
-    firstName: {
-      type: String,
-      validate: [validate.nameLength, "Invalid first name"],
-      default: "",
-    },
-    lastName: {
-      type: String,
-      validate: [validate.nameLength, "Invalid last name"],
-      default: "",
-    },
+  
     token: { type: String },
     role: {
       type: String,
