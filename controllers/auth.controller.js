@@ -72,12 +72,18 @@ const login = asyncWrapper(async (req, res, next) => {
     role: foundUser.role,
   };
 
-  const token = generateJWT(payload);
+  const authToken = generateJWT(payload);
 
   const sessionPayload = { userId: foundUser._id, role: foundUser.role };
   req.session.user = sessionPayload;
 
-  return jsendSuccess(res, { token });
+res.cookie("authToken", authToken, {
+  httpOnly: true,   
+  secure: process.env.NODE_ENV === "production", 
+  sameSite: "lax",
+});
+
+  return jsendSuccess(res, { authToken: authToken });
 });
 
 export { register, login };

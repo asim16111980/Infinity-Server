@@ -27,11 +27,11 @@ const mongoStore = MongoStore.create({
 });
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
-app.use("/api/auth/login",createSession(mongoStore));
+app.use("/api/auth/login", createSession(mongoStore));
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
