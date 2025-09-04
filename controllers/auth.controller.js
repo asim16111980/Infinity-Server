@@ -74,14 +74,19 @@ const login = asyncWrapper(async (req, res, next) => {
 
   const authToken = generateJWT(payload);
 
+  const day = 1000 * 60 * 60 * 24;
+  const sessionMaxAge = { short: day, long: day * 7 };
+  req.session.cookie.maxAge = req.body.remember
+    ? sessionMaxAge.long
+    : sessionMaxAge.short;
   const sessionPayload = { userId: foundUser._id, role: foundUser.role };
   req.session.user = sessionPayload;
 
-res.cookie("authToken", authToken, {
-  httpOnly: true,   
-  secure: process.env.NODE_ENV === "production", 
-  sameSite: "lax",
-});
+  res.cookie("authToken", authToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
 
   return jsendSuccess(res, { authToken: authToken });
 });
