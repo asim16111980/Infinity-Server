@@ -54,7 +54,8 @@ const login = asyncWrapper(async (req, res, next) => {
 
   let foundUser;
   if (email !== "") {
-    foundUser = await User.findOne({ email });
+    foundUser = await User.findOne({ email:email });
+    console.log(email);
   }
 
   if (!foundUser) {
@@ -91,4 +92,8 @@ const login = asyncWrapper(async (req, res, next) => {
   return jsendSuccess(res, { authToken: authToken });
 });
 
-export { register, login };
+const refreshToken = asyncWrapper(async (req, res, next) => {
+ console.log(req.session);
+})
+
+export { register, login,refreshToken };

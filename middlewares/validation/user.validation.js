@@ -73,6 +73,6 @@ export const registerUserRules = [baseUserRules.email, baseUserRules.password];
 
 // Login rules
 export const loginUserRules = [
-  baseUserRules.email.optional(),
+  baseUserRules.email,
   baseUserRules.password,
 ];
