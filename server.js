@@ -14,7 +14,7 @@ import { seedAdminOnStartup } from "./controllers/user.controller.js";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import MongoStore from "connect-mongo";
-import { createSession } from "./middlewares/createSession.js";
+import { configureSession } from "./middlewares/configureSession.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -31,7 +31,7 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
-app.use("/api/auth/login", createSession(mongoStore));
+app.use("/api/auth", configureSession(mongoStore));
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);

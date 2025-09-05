@@ -5,6 +5,7 @@ import { jsendSuccess } from "../utils/jsend.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { generateJWT } from "../utils/generateJWT.js";
+import session from "express-session";
 
 const register = asyncWrapper(async (req, res) => {
   const errors = validationResult(req);
@@ -54,8 +55,7 @@ const login = asyncWrapper(async (req, res, next) => {
 
   let foundUser;
   if (email !== "") {
-    foundUser = await User.findOne({ email:email });
-    console.log(email);
+    foundUser = await User.findOne({ email: email });
   }
 
   if (!foundUser) {
@@ -80,20 +80,23 @@ const login = asyncWrapper(async (req, res, next) => {
   req.session.cookie.maxAge = req.body.remember
     ? sessionMaxAge.long
     : sessionMaxAge.short;
-  const sessionPayload = { userId: foundUser._id, role: foundUser.role };
-  req.session.user = sessionPayload;
+  req.session.user = payload;
 
-  res.cookie("authToken", authToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+  req.session.save((err) => {
+    if (err) return next(err);
+    return jsendSuccess(res, { authToken });
   });
-
-  return jsendSuccess(res, { authToken: authToken });
 });
 
 const refreshToken = asyncWrapper(async (req, res, next) => {
- console.log(req.session);
-})
+  const sessionId = req.sessionID;
+  if (!sessionId || !req.session?.user) {
+    throw new AppError("No session found", 401);
+  }
 
-export { register, login,refreshToken };
+  const authToken = generateJWT(req.session.user);
+
+  return jsendSuccess(res, { authToken });
+});
+
+export { register, login, refreshToken };

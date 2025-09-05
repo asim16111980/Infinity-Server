@@ -1,6 +1,6 @@
 import session from "express-session";
 
-export const createSession = (store) => {
+export const configureSession = (store) => {
   return session({
     secret: process.env.SESSION_SECRET_KEY,
     resave: false,
