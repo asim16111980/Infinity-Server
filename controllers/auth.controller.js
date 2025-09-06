@@ -90,6 +90,7 @@ const login = asyncWrapper(async (req, res, next) => {
 
 const refreshToken = asyncWrapper(async (req, res, next) => {
   const sessionId = req.sessionID;
+  
   if (!sessionId || !req.session?.user) {
     throw new AppError("No session found", 401);
   }
