@@ -89,15 +89,13 @@ const login = asyncWrapper(async (req, res, next) => {
 });
 
 const refreshToken = asyncWrapper(async (req, res, next) => {
-  const sessionId = req.sessionID;
-  
-  if (!sessionId || !req.session?.user) {
-    throw new AppError("No session found", 401);
-  }
-
   const authToken = generateJWT(req.session.user);
 
   return jsendSuccess(res, { authToken });
 });
 
-export { register, login, refreshToken };
+const verifySession = asyncWrapper((req, res, next) => {
+  return jsendSuccess(res, { user: req.session.user });
+});
+
+export { register, login, refreshToken, verifySession };

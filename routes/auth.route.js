@@ -6,7 +6,12 @@ import {
   registerUserRules,
 } from "../middlewares/validation/user.validation.js";
 import { validateRequest } from "../middlewares/validation/validateRequest.js";
-import { register, login,refreshToken } from "../controllers/auth.controller.js";
+import {
+  register,
+  login,
+  refreshToken,
+} from "../controllers/auth.controller.js";
+import { requireSession } from "../middlewares/requireSession.js";
 
 const router = express.Router();
 
@@ -23,9 +28,8 @@ router
 router
   .route("/login")
   .post(upload.none(), loginUserRules, validateRequest, login);
-  
-router
-  .route("/refresh-token")
-  .post(refreshToken);
 
+router.route("/refresh-token").post(requireSession, refreshToken);
+
+router.route("/verify-session").get(requireSession, verifySession);
 export default router;
