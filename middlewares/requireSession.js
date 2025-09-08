@@ -1,4 +1,4 @@
-import AppError from "../appError.js";
+import AppError from "../utils/appError.js";
 
 export function requireSession(req, res, next) {
   if (!req.session || !req.session.user) {

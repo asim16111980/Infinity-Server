@@ -10,6 +10,7 @@ import {
   register,
   login,
   refreshToken,
+  verifySession,
 } from "../controllers/auth.controller.js";
 import { requireSession } from "../middlewares/requireSession.js";
 
