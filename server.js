@@ -47,6 +47,7 @@ app.use((err, req, res, next) => {
   if (err instanceof AppError) {
     return jsendFail(res, { message: err.message }, err.statusCode);
   }
+  console.log(err);
   return jsendError(res, err.message);
 });
 

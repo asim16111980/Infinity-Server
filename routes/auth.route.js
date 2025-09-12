@@ -30,7 +30,7 @@ router
   .route("/login")
   .post(upload.none(), loginUserRules, validateRequest, login);
 
-router.route("/refresh-token").post(requireSession, refreshToken);
+router.route("/refresh").post(requireSession, refreshToken);
 
-router.route("/verify-session").get(requireSession, verifySession);
+router.route("/verify").get(requireSession, verifySession);
 export default router;

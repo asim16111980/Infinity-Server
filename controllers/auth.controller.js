@@ -88,14 +88,14 @@ const login = asyncWrapper(async (req, res, next) => {
   });
 });
 
-const refreshToken = asyncWrapper(async (req, res, next) => {
+const refreshToken = (req, res, next) => {
   const authToken = generateJWT(req.session.user);
 
   return jsendSuccess(res, { authToken });
-});
+};
 
-const verifySession = asyncWrapper((req, res, next) => {
+const verifySession = (req, res, next) => {
   return jsendSuccess(res, { user: req.session.user });
-});
+};
 
 export { register, login, refreshToken, verifySession };
