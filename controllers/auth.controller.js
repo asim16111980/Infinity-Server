@@ -84,14 +84,20 @@ const login = asyncWrapper(async (req, res, next) => {
 
   req.session.save((err) => {
     if (err) return next(err);
-    return jsendSuccess(res, { authToken });
+    return jsendSuccess(res, {
+      authToken,
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
   });
 });
 
 const refreshToken = (req, res, next) => {
   const authToken = generateJWT(req.session.user);
 
-  return jsendSuccess(res, { authToken });
+  return jsendSuccess(res, {
+    authToken,
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
 };
 
 const verifySession = (req, res, next) => {
