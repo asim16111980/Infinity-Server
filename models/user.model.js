@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { validate } from "../utils/validator.js";
 import _default from "validator";
 import { USER_ROLES } from "../constants/userRoles.js";
+import { USER_GENDER } from "../constants/userGender.js";
 
 const addressSchema = new mongoose.Schema(
   {
@@ -32,15 +33,25 @@ const addressSchema = new mongoose.Schema(
 
 const userSchema = new mongoose.Schema(
   {
-     firstName: {
+    firstName: {
       type: String,
-      validate: [validate.nameLength, "Invalid first name"],
+      validate: [validate.nameLength(2,50), "Invalid first name"],
       default: "",
     },
     lastName: {
       type: String,
-      validate: [validate.nameLength, "Invalid last name"],
+      validate: [validate.nameLength(2,50), "Invalid last name"],
       default: "",
+    },
+    displayName: {
+      type: String,
+      validate: [validate.nameLength, "Invalid display name"],
+      default: "",
+    },
+    gender: {
+      type: Boolean,
+      enum: [USER_GENDER.male, USER_GENDER.female, USER_GENDER.unspecified],
+      default:USER_GENDER.unspecified,
     },
     email: {
       type: String,
@@ -55,7 +66,6 @@ const userSchema = new mongoose.Schema(
     },
     uploadPath: { type: String, required: true },
     avatar: { type: String, default: "default_avatar.png" },
-  
     token: { type: String },
     role: {
       type: String,

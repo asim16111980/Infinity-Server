@@ -1,9 +1,11 @@
 import validator from "validator";
 
 export const validate = {
-  nameLength: (value) => {
-    if (!value) return true;
-    return validator.isLength(value, { min: 2, max: 100 });
+  nameLength: (min = 5, max = 101) => {
+    return (value) => {
+      if (!value) return true;
+      return validator.isLength(value, { min, max });
+    };
   },
   email: (value) => validator.isEmail(value),
   password: (value) =>

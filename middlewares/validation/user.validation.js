@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { USER_GENDER } from "../../constants/userGender";
 
 const baseUserRules = {
   firstName: body("firstName")
@@ -13,6 +14,18 @@ const baseUserRules = {
     .withMessage("Last name must be a string")
     .trim(),
 
+  displayName: body("displayName")
+    .optional()
+    .isString()
+    .withMessage("Display name must be a string")
+    .trim(),
+
+  gender: body("gender")
+    .optional()
+    .isIn(Object.values(USER_GENDER))
+    .withMessage(
+      `Gender must bo one of: ${Object.values(USER_GENDER).join(" , ")}`
+    ),
   email: body("email")
     .notEmpty()
     .withMessage("Email is required")
@@ -72,7 +85,4 @@ const baseUserRules = {
 export const registerUserRules = [baseUserRules.email, baseUserRules.password];
 
 // Login rules
-export const loginUserRules = [
-  baseUserRules.email,
-  baseUserRules.password,
-];
+export const loginUserRules = [baseUserRules.email, baseUserRules.password];
