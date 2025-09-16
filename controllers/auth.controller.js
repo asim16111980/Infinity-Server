@@ -37,12 +37,16 @@ const register = asyncWrapper(async (req, res) => {
     email: newUser.email,
     role: newUser.role,
   };
-  const token = generateJWT(payload);
+  const authToken = generateJWT(payload);
 
-  newUser.token = token;
+  // newUser.token = token;
 
   const savedUser = await newUser.save();
-  return jsendSuccess(res, { user: savedUser }, 201);
+  return jsendSuccess(
+    res,
+    { authToken, expiresIn: process.env.JWT_EXPIRES_IN },
+    201
+  );
 });
 
 const login = asyncWrapper(async (req, res, next) => {
@@ -84,6 +88,7 @@ const login = asyncWrapper(async (req, res, next) => {
 
   req.session.save((err) => {
     if (err) return next(err);
+
     return jsendSuccess(res, {
       authToken,
       expiresIn: process.env.JWT_EXPIRES_IN,

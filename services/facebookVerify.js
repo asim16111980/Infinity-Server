@@ -1,6 +1,11 @@
 import User from "../models/user.model.js";
 
-export default async function FacebookVerify(accessToken, refreshToken, profile, cb) {
+export default async function FacebookVerify(
+  accessToken,
+  refreshToken,
+  profile,
+  cb
+) {
   try {
     const email = profile._json.email || null;
     const name = profile._json.name || null;
@@ -20,39 +25,51 @@ export default async function FacebookVerify(accessToken, refreshToken, profile,
           facebook: {
             id: profile.id,
             token: accessToken,
-            name
+            name,
           },
         },
       });
     }
 
-    const payload = {
-      id: user._id,
-      email: user.email,
-      role: user.role,
-    };
-    const token = generateJWT(payload);
-    
-    user.token = token;
-    
-    const savedUser = await user.save();
-
-    return cb(null, user);
+    return cb(null, { user });
   } catch (err) {
     return cb(err, null);
   }
 }
 
-const newData = { email, role };
-const hashedPassword = await bcrypt.hash(password, 10);
-newData.password = hashedPassword;
-newData.uploadPath = req.uploadPath;
 
-const avatar = req.file?.filename || "";
-if (avatar) {
-  newData.avatar = avatar;
-}
+router.get(
+  "/facebook/callback",
+  passport.authenticate("facebook", { session: false, failureRedirect: "/login" }),
+  async (req, res, next) => {
+    try {
+      // هنا الـ user جاي من FacebookStrategy (اللي انت مولد له token)
+      const { user } = req.user; 
+      const token = req.user.token;
 
-const newUser = new User(newData);
+      // نفس فكرة السيشن زي اللوجن العادي
+      const day = 1000 * 60 * 60 * 24;
+      const sessionMaxAge = { short: day, long: day * 7 };
+      req.session.cookie.maxAge = sessionMaxAge.short; // أو استخدم remember لو عندك
+      req.session.user = {
+        id: user._id,
+        email: user.email,
+        role: user.role,
+      };
 
+      req.session.save((err) => {
+        if (err) return next(err);
 
+        return res.json({
+          status: "success",
+          data: {
+            authToken: token,
+            expiresIn: process.env.JWT_EXPIRES_IN,
+          },
+        });
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);

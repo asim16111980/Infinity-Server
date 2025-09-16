@@ -13,6 +13,7 @@ import {
   verifySession,
 } from "../controllers/auth.controller.js";
 import { requireSession } from "../middlewares/requireSession.js";
+import passport from "../config/passport.js";
 
 const router = express.Router();
 
@@ -29,6 +30,17 @@ router
 router
   .route("/login")
   .post(upload.none(), loginUserRules, validateRequest, login);
+
+router.route("/facebook").get(passport.authenticate("facebook", { scope: ["email"] }));
+
+router
+  .route("/facebook/callback")
+  .get(
+    passport.authenticate("facebook", {
+      successRedirect: "/",
+      failureRedirect: "/login",
+    })
+  );
 
 router.route("/refresh").post(requireSession, refreshToken);
 
