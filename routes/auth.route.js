@@ -14,6 +14,7 @@ import {
 } from "../controllers/auth.controller.js";
 import { requireSession } from "../middlewares/requireSession.js";
 import passport from "../config/passport.js";
+import finalizeAuth from "../middlewares/finalizeAuth.js";
 
 const router = express.Router();
 
@@ -24,23 +25,24 @@ router
     upload.single("avatar"),
     registerUserRules,
     validateRequest,
-    register
+    register,
+    finalizeAuth
   );
 
 router
   .route("/login")
-  .post(upload.none(), loginUserRules, validateRequest, login);
-
-router.route("/facebook").get(passport.authenticate("facebook", { scope: ["email"] }));
+  .post(upload.none(), loginUserRules, validateRequest, login, finalizeAuth);
 
 router
-  .route("/facebook/callback")
-  .get(
-    passport.authenticate("facebook", {
-      successRedirect: "/",
-      failureRedirect: "/login",
-    })
-  );
+  .route("/facebook")
+  .get(passport.authenticate("facebook", { scope: ["email"] }));
+
+router.route("/facebook/callback").get(
+  passport.authenticate("facebook", {
+    failureRedirect: "/login",
+  }),
+  finalizeAuth
+);
 
 router.route("/refresh").post(requireSession, refreshToken);
 

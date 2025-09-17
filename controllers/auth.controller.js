@@ -5,7 +5,6 @@ import { jsendSuccess } from "../utils/jsend.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { generateJWT } from "../utils/generateJWT.js";
-import session from "express-session";
 
 const register = asyncWrapper(async (req, res) => {
   const errors = validationResult(req);
@@ -32,21 +31,21 @@ const register = asyncWrapper(async (req, res) => {
 
   const newUser = new User(newData);
 
-  const payload = {
-    id: newUser._id,
-    email: newUser.email,
-    role: newUser.role,
-  };
-  const authToken = generateJWT(payload);
-
-  // newUser.token = token;
+  // const payload = {
+  //   id: newUser._id,
+  //   email: newUser.email,
+  //   role: newUser.role,
+  // };
+  // const authToken = generateJWT(payload);
 
   const savedUser = await newUser.save();
-  return jsendSuccess(
-    res,
-    { authToken, expiresIn: process.env.JWT_EXPIRES_IN },
-    201
-  );
+
+  req.user = savedUser;
+  // return jsendSuccess(
+  //   res,
+  //   { authToken, expiresIn: process.env.JWT_EXPIRES_IN },
+  //   201
+  // );
 });
 
 const login = asyncWrapper(async (req, res, next) => {
@@ -71,29 +70,30 @@ const login = asyncWrapper(async (req, res, next) => {
     throw new AppError("Invalid credentials", 401);
   }
 
-  const payload = {
-    id: foundUser._id,
-    email: foundUser.email,
-    role: foundUser.role,
-  };
+  req.user = foundUser;
+  // const payload = {
+  //   id: foundUser._id,
+  //   email: foundUser.email,
+  //   role: foundUser.role,
+  // };
 
-  const authToken = generateJWT(payload);
+  // const authToken = generateJWT(payload);
 
-  const day = 1000 * 60 * 60 * 24;
-  const sessionMaxAge = { short: day, long: day * 7 };
-  req.session.cookie.maxAge = req.body.remember
-    ? sessionMaxAge.long
-    : sessionMaxAge.short;
-  req.session.user = payload;
+  // const day = 1000 * 60 * 60 * 24;
+  // const sessionMaxAge = { short: day, long: day * 7 };
+  // req.session.cookie.maxAge = req.body.remember
+  //   ? sessionMaxAge.long
+  //   : sessionMaxAge.short;
+  // req.session.user = payload;
 
-  req.session.save((err) => {
-    if (err) return next(err);
+  // req.session.save((err) => {
+  //   if (err) return next(err);
 
-    return jsendSuccess(res, {
-      authToken,
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
-  });
+  //   return jsendSuccess(res, {
+  //     authToken,
+  //     expiresIn: process.env.JWT_EXPIRES_IN,
+  //   });
+  // });
 });
 
 const refreshToken = (req, res, next) => {
