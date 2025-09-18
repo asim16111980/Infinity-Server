@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
+import normalizeDisplayName from "../utils/normalizeDisplayName.js";
 
-export default async function FacebookVerify(
+export default async function facebookVerify(
   accessToken,
   refreshToken,
   profile,

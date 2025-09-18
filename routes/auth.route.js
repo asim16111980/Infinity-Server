@@ -35,7 +35,7 @@ router
 
 router
   .route("/facebook")
-  .get(passport.authenticate("facebook", { scope: ["email"] }));
+  .get(passport.authenticate("facebook", {session:false, scope: ["email"] }));
 
 router.route("/facebook/callback").get(
   passport.authenticate("facebook", {

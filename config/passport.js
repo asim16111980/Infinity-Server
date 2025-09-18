@@ -1,5 +1,5 @@
 import passport from "passport";
-import { facebookStrategy } from "./strategy/facebookStrategy.js";
+import facebookStrategy from "../strategies/facebook.strategy.js";
 
 passport.use(facebookStrategy());
 

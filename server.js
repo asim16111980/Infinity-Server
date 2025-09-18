@@ -15,6 +15,7 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import MongoStore from "connect-mongo";
 import { configureSession } from "./middlewares/configureSession.js";
+import passport from "passport";
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -36,6 +37,8 @@ app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
+app.use(passport.initialize());
+
 app.all("*", (req, res) => {
   return jsendFail(res, { message: "Not Found" }, 404);
 });
@@ -47,7 +50,6 @@ app.use((err, req, res, next) => {
   if (err instanceof AppError) {
     return jsendFail(res, { message: err.message }, err.statusCode);
   }
-  console.log(err);
   return jsendError(res, err.message);
 });
 

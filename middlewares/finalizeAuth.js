@@ -1,7 +1,7 @@
-import asyncWrapper from "./asyncWrapper";
-import AppError from "../utils/appError";
-import { generateJWT } from "../utils/generateJWT";
-import { jsendSuccess } from "../utils/jsend";
+import asyncWrapper from "./asyncWrapper.js";
+import AppError from "../utils/appError.js";
+import { generateJWT } from "../utils/generateJWT.js";
+import { jsendSuccess } from "../utils/jsend.js";
 
 const finalizeAuth = asyncWrapper(async (req, res, next) => {
   const user = req.user;

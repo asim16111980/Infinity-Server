@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { USER_GENDER } from "../../constants/userGender";
+import { USER_GENDER } from "../../constants/userGender.js";
 
 const baseUserRules = {
   firstName: body("firstName")
