@@ -1,8 +1,10 @@
 import passport from "passport";
 import facebookStrategy from "../strategies/facebook.strategy.js";
+import googleStrategy from "../strategies/google.strategy.js";
 import User from "../models/user.model.js";
 
 passport.use(facebookStrategy());
+passport.use(googleStrategy());
 
 passport.serializeUser((user, done) => {
   done(null, user._id);

@@ -18,8 +18,8 @@ export default async function facebookVerify(
     if (!user) {
       user = await User.create({
         email,
-        oauthName: "facebook",
-        displayName: normalizeDisplayName(profile.displayName),
+        oauthName: name,
+        displayName: normalizeDisplayName(name),
         gender,
         avatar,
         providers: {

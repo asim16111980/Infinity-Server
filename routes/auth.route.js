@@ -44,6 +44,17 @@ router.route("/facebook/callback").get(
   finalizeAuth
 );
 
+router
+  .route("/google")
+  .get(passport.authenticate("google", { scope: ["openid","email","profile",] }));
+
+router.route("/google/callback").get(
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+  }),
+  finalizeAuth
+);
+
 router.route("/refresh").post(requireSession, refreshToken);
 
 router.route("/verify").get(requireSession, verifySession);
