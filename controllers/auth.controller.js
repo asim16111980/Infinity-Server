@@ -110,5 +110,4 @@ const verifySession = (req, res, next) => {
 };
 
 export { register, login, refreshToken, verifySession };
-// facebookId 1334636261553110
-// facebook secret 0dff63bc8d7b8c1ae23aee9fc3c20698
+

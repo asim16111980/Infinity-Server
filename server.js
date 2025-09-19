@@ -33,11 +33,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
 app.use("/api/auth", configureSession(mongoStore));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use("/api/products", productsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
-app.use(passport.initialize());
 
 app.all("*", (req, res) => {
   return jsendFail(res, { message: "Not Found" }, 404);

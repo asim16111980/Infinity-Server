@@ -5,7 +5,7 @@ export default async function facebookVerify(
   accessToken,
   refreshToken,
   profile,
-  cb
+  done
 ) {
   try {
     const email = profile._json.email || null;
@@ -32,8 +32,8 @@ export default async function facebookVerify(
       });
     }
 
-    return cb(null, { user });
+    return done(null,  user );
   } catch (err) {
-    return cb(err, null);
+    return done(err, null);
   }
 }
