@@ -1,31 +1,32 @@
 import User from "../models/user.model.js";
+import normalizeName from "../utils/normalizeName.js";
 
 export default async function (issuer, profile, cb) {
   try {
-    // const email = profile._json.email || null;
-    // const name = profile._json.name || null;
-    // const gender = profile._json.gender || "UNSPECIFIED";
-    // const avatar = profile._json.picture?.data?.url || null;
+    const email = profile.emails[0].value || null;
+    const firstName = profile.name.givenName || null;
+    const lastName = profile.name.familyName || null;
+    const name = profile.displayName || null;
 
-    // let user = await User.findOne({ "providers.google.id": profile.id });
+    let user = await User.findOne({ "providers.google.id": profile.id });
 
-    // if (!user) {
-    //   user = await User.create({
-    //     email,
-    //     oauthName: name,
-    //     displayName: normalizeDisplayName(name),
-    //     gender,
-    //     avatar,
-    //     providers: {
-    //       google: {
-    //         id: profile.id,
-    //         token: accessToken,
-    //         name,
-    //       },
-    //     },
-    //   });
-    // }
-console.log(profile);
+    if (!user) {
+      user = await User.create({
+        email,
+        firstName: normalizeName(firstName, 2, 50),
+        lastName: normalizeName(lastName, 2, 5),
+        oauthName: name,
+        displayName: normalizeName(name),
+        providers: {
+          google: {
+            id: profile.id,
+            token: accessToken,
+            name,
+          },
+        },
+      });
+    }
+    console.log(profile);
     // if (!user) {
     //   user = await User.create({
     //     googleId: profile.id,

@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema(
     },
     displayName: {
       type: String,
-      validate: [validate.nameLength(2, 100), "Invalid display name"],
+      validate: [validate.nameLength(), "Invalid display name"],
       default: "",
     },
 
@@ -75,7 +75,6 @@ const userSchema = new mongoose.Schema(
     // 🔹 Group 3: OAuth Providers
     providers: {
       oauthName: { type: String },
-      oauthToken: { type: String },
       facebook: {
         id: { type: String, unique: true, sparse: true },
         name: { type: String },
