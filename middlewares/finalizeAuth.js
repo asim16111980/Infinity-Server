@@ -5,7 +5,6 @@ import { jsendSuccess } from "../utils/jsend.js";
 
 const finalizeAuth = asyncWrapper(async (req, res, next) => {
   const user = req.user;
-console.log(user);
 
   if (!user) {
     throw new AppError("User not found", 400);
@@ -28,12 +27,11 @@ console.log(user);
 
   req.session.save((err) => {
     if (err) return next(err);
-console.log(res);
 
     return jsendSuccess(res, {
       authToken,
       expiresIn: process.env.JWT_EXPIRES_IN,
-    }, 200);
+    }, res.statusCode ||200);
   });
 });
 

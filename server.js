@@ -40,6 +40,7 @@ app.use("/api/categories", categoriesRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
 
+console.log(passport._strategies.google);
 app.all("*", (req, res) => {
   return jsendFail(res, { message: "Not Found" }, 404);
 });
