@@ -6,7 +6,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { generateJWT } from "../utils/generateJWT.js";
 
-const register = asyncWrapper(async (req, res) => {
+const register = asyncWrapper(async (req, res,next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);

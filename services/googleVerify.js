@@ -1,33 +1,29 @@
 import User from "../models/user.model.js";
 import normalizeName from "../utils/normalizeName.js";
-import { OAuth2Client } from 'google-auth-library';
-export default async function (issuer, sub, profile, jwtClaims, accessToken, refreshToken, params, done) {
-    try {
-      // هنا منطق تسجيل أو استرجاع المستخدم
-      console.log(  params.id_token);
-      // const user = { id: sub, name: profile.displayName };
-      // return done(null, user);
-   
+import { OAuth2Client } from "google-auth-library";
 
-   
-
-    const client = new OAuth2Client(process.env.GOOGLE_APP_ID);
-    
-  
-      const ticket = await client.verifyIdToken({
-        idToken :params.id_token,
-        audience: process.env.GOOGLE_APP_ID, // لازم يكون نفس الـ clientID بتاعك
-      });
-      console.log(ticket);
-    
-      const payload = ticket.getPayload();
-      console.log(payload);
- 
+export default async function (
+  issuer,
+  profile,
+  sub,
+  jwtClaims,
+  accessToken,
+  refreshToken,
+  params,
+  done
+) {
   try {
-    const email = profile.emails[0].value || null;
-    const firstName = profile.name.givenName || null;
-    const lastName = profile.name.familyName || null;
-    const name = profile.displayName || null;
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+    const ticket = await client.verifyIdToken({
+      idToken: params.id_token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const email = payload.email || null;
+    const firstName = payload.given_name || null;
+    const lastName = payload.family_name || null;
+    const name = payload.name || null;
     const avatar = payload.picture || null;
 
     let user = await User.findOne({ "providers.google.id": profile.id });
@@ -49,17 +45,8 @@ export default async function (issuer, sub, profile, jwtClaims, accessToken, ref
         },
       });
     }
-//     console.log(profile);
-//     // if (!user) {
-//     //   user = await User.create({
-//     //     googleId: profile.id,
-//     //     name: profile.displayName,
-//     //     email: profile.emails?.[0]?.value,
-//     //   });  
-//     // }
-
-//     // return cb(null, user);
-//   } catch (err) {
-//     // return cb(err,null);
-//   }
+    return done(null, user);
+  } catch (err) {
+    return done(err, null);
+  } 
 }

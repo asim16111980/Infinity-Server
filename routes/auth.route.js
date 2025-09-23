@@ -46,7 +46,7 @@ router.route("/facebook/callback").get(
 
 router
   .route("/google")
-  .get(passport.authenticate("google", { scope: ["openid","email","profile",] }));
+  .get(passport.authenticate("google"));
 
 router.route("/google/callback").get(
   passport.authenticate("google", {
