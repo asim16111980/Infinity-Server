@@ -53,23 +53,22 @@ const login = asyncWrapper(async (req, res, next) => {
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
-
+  
   const { email, password } = req.body;
-
+  
   let foundUser;
   if (email !== "") {
     foundUser = await User.findOne({ email: email });
   }
-
+  
   if (!foundUser) {
     throw new AppError("Invalid credentials", 401);
   }
-
+  
   const matchedPassword = await bcrypt.compare(password, foundUser.password);
   if (!matchedPassword) {
     throw new AppError("Invalid credentials", 401);
   }
-
   req.user = foundUser;
   // const payload = {
   //   id: foundUser._id,

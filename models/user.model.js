@@ -69,7 +69,6 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       validate: [validate.password, "Weak password"],
-      select: false,
     },
 
     // 🔹 Group 3: OAuth Providers
