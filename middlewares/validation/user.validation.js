@@ -86,3 +86,6 @@ export const registerUserRules = [baseUserRules.email, baseUserRules.password];
 
 // Login rules
 export const loginUserRules = [baseUserRules.email, baseUserRules.password];
+
+// Reset password rules
+export const resetPasswordRules = [baseUserRules.email];

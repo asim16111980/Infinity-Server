@@ -6,7 +6,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { generateJWT } from "../utils/generateJWT.js";
 
-const register = asyncWrapper(async (req, res,next) => {
+const register = asyncWrapper(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
@@ -53,18 +53,18 @@ const login = asyncWrapper(async (req, res, next) => {
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
-  
+
   const { email, password } = req.body;
-  
+
   let foundUser;
   if (email !== "") {
     foundUser = await User.findOne({ email: email });
   }
-  
+
   if (!foundUser) {
     throw new AppError("Invalid credentials", 401);
   }
-  
+
   const matchedPassword = await bcrypt.compare(password, foundUser.password);
   if (!matchedPassword) {
     throw new AppError("Invalid credentials", 401);
@@ -95,7 +95,7 @@ const login = asyncWrapper(async (req, res, next) => {
   // });
 });
 
-const refreshToken = (req, res, next) => {
+const refreshToken = async (req, res, next) => {
   const authToken = generateJWT(req.session.user);
 
   return jsendSuccess(res, {
@@ -104,9 +104,38 @@ const refreshToken = (req, res, next) => {
   });
 };
 
-const verifySession = (req, res, next) => {
+const verifySession = async (req, res, next) => {
   return jsendSuccess(res, { user: req.session.user });
 };
 
-export { register, login, refreshToken, verifySession };
+const resetPassword = asyncWrapper(async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new AppError("Validation failed", 400);
+  }
 
+  const { email } = req.body;
+
+  let foundUser;
+  if (email !== "") {
+    foundUser = await User.findOne({ email: email });
+  }
+
+  if (!foundUser) {
+    throw new AppError("Invalid credentials", 401);
+  }
+
+  const payload = {
+    id: foundUser._id,
+    email: foundUser.email,
+    role: foundUser.role,
+  };
+
+  const tokenExp = Date.now() + 3600000;
+  const authToken = generateJWT(payload,tokenExp);
+
+  foundUser.token = authToken;
+  foundUser.save();
+});
+
+export { register, login, refreshToken, verifySession };
