@@ -5,31 +5,13 @@ import { jsendSuccess } from "../utils/jsend.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import { generateJWT } from "../utils/generateJWT.js";
+import * as authService from "../services/auth.service.js";
 
 const register = asyncWrapper(async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
-
-  const { email, password, role } = req.body;
-
-  let oldUser = await User.findOne({ email });
-  if (oldUser) {
-    throw new AppError("User with this email already exists", 400);
-  }
-
-  const newData = { email, role };
-  const hashedPassword = await bcrypt.hash(password, 10);
-  newData.password = hashedPassword;
-  newData.uploadPath = req.uploadPath;
-
-  const avatar = req.file?.filename || "";
-  if (avatar) {
-    newData.avatar = avatar;
-  }
-
-  const newUser = new User(newData);
 
   // const payload = {
   //   id: newUser._id,
@@ -38,9 +20,7 @@ const register = asyncWrapper(async (req, res, next) => {
   // };
   // const authToken = generateJWT(payload);
 
-  const savedUser = await newUser.save();
-
-  req.user = savedUser;
+  req.user = await authService.registerUser(req);
   // return jsendSuccess(
   //   res,
   //   { authToken, expiresIn: process.env.JWT_EXPIRES_IN },
@@ -54,22 +34,7 @@ const login = asyncWrapper(async (req, res, next) => {
     throw new AppError("Validation failed", 400);
   }
 
-  const { email, password } = req.body;
-
-  let foundUser;
-  if (email !== "") {
-    foundUser = await User.findOne({ email: email });
-  }
-
-  if (!foundUser) {
-    throw new AppError("Invalid credentials", 401);
-  }
-
-  const matchedPassword = await bcrypt.compare(password, foundUser.password);
-  if (!matchedPassword) {
-    throw new AppError("Invalid credentials", 401);
-  }
-  req.user = foundUser;
+  req.user = authService.loginUser(req);
   // const payload = {
   //   id: foundUser._id,
   //   email: foundUser.email,
@@ -113,29 +78,10 @@ const resetPassword = asyncWrapper(async (req, res, next) => {
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
+  
+  const link =await authService.requestPasswordReset(req);
 
-  const { email } = req.body;
-
-  let foundUser;
-  if (email !== "") {
-    foundUser = await User.findOne({ email: email });
-  }
-
-  if (!foundUser) {
-    throw new AppError("Invalid credentials", 401);
-  }
-
-  const payload = {
-    id: foundUser._id,
-    email: foundUser.email,
-    role: foundUser.role,
-  };
-
-  const tokenExp = Date.now() + 3600000;
-  const authToken = generateJWT(payload,tokenExp);
-
-  foundUser.token = authToken;
-  foundUser.save();
+  return jsendSuccess(res, link);
 });
 
-export { register, login, refreshToken, verifySession };
+export { register, login, refreshToken, verifySession, resetPassword };

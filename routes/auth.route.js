@@ -11,6 +11,7 @@ import {
   login,
   refreshToken,
   verifySession,
+  resetPassword,
 } from "../controllers/auth.controller.js";
 import { requireSession } from "../middlewares/requireSession.js";
 import passport from "../config/passport.js";
@@ -44,9 +45,7 @@ router.route("/facebook/callback").get(
   finalizeAuth
 );
 
-router
-  .route("/google")
-  .get(passport.authenticate("google"));
+router.route("/google").get(passport.authenticate("google"));
 
 router.route("/google/callback").get(
   passport.authenticate("google", {
@@ -58,4 +57,5 @@ router.route("/google/callback").get(
 router.route("/refresh").post(requireSession, refreshToken);
 
 router.route("/verify").get(requireSession, verifySession);
+router.route("/requestResetPassword").post(validateRequest, resetPassword);
 export default router;
