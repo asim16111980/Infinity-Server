@@ -51,10 +51,9 @@ const loginUser = async (req) => {
 
 const requestPasswordReset = async (req) => {
   const clientURL = process.env.CLIENT_URL;
-
   const { email } = req.body;
-  const foundUser = await User.findOne({ email });
 
+  const foundUser = await User.findOne({ email });
   if (!foundUser) throw new AppError("User not found", 404);
 
   const payload = {
@@ -62,21 +61,27 @@ const requestPasswordReset = async (req) => {
     email: foundUser.email,
     role: foundUser.role,
   };
-
   const tokenExp = Date.now() + 3600000;
   const resetToken = generateJWT(payload, tokenExp);
 
   foundUser.token = resetToken;
-  foundUser.save();
+  await foundUser.save();
 
   const link = `${clientURL}/passwordReset?token=${resetToken}`;
-  sendEmail(
+
+  const result = await sendEmail(
     foundUser.email,
     "Password Reset Request",
     { name: foundUser.name, link },
     "./template/requestResetPassword.handlebars"
   );
-  return link;
+
+  if (!result.success) {
+    console.error("Error sending email:", result.error);
+    throw new AppError("Failed to send password reset email", 500);
+  }
+
+  return { success: true, message: "Password reset email sent successfully." };
 };
 
 export { registerUser, loginUser, requestPasswordReset };

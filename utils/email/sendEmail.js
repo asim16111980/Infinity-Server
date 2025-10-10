@@ -14,36 +14,27 @@ export const sendEmail = async (email, subject, payload, template) => {
       port: 465,
       secure: true,
       auth: {
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        user: process.env.EMAIL_USER,  
+        pass: process.env.EMAIL_PASS,    
       },
     });
 
-    const sourceTemplate = fs.readFileSync(
-      path.join(__dirname, template),
-      "utf-8"
-    );
-    const compiledTemplate = Handlebars.compile(sourceTemplate);
+    const source = fs.readFileSync(path.join(__dirname, template), "utf-8");
+    const compiledTemplate = Handlebars.compile(source);
 
-    const options = () => {
-      return {
-        from: `Infinity App <noreplay@infinity.com>`,
-        to: email,
-        subject: subject,
-        html: compiledTemplate(payload),
-      };
+    const mailOptions = {
+      from: `Infinity App <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject,
+      html: compiledTemplate(payload),
     };
 
-    transporter.sendMail(options(), (error, info) => {
-      if (error) {
-        return error;
-      } else {
-        return res.status(200).json({
-          success: true,
-        });
-      }
-    });
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log("Email sent:", info.messageId);
+    return { success: true, info };
   } catch (err) {
-    return err;
+    console.error("Email error:", err);
+    return { success: false, error: err };
   }
 };

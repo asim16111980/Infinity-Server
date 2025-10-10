@@ -78,10 +78,12 @@ const resetPassword = asyncWrapper(async (req, res, next) => {
   if (!errors.isEmpty()) {
     throw new AppError("Validation failed", 400);
   }
-  
-  const link =await authService.requestPasswordReset(req);
 
-  return jsendSuccess(res, link);
+  await authService.requestPasswordReset(req);
+
+  return jsendSuccess(res, {
+    message: "If this email exists, a password reset link has been sent.",
+  });
 });
 
 export { register, login, refreshToken, verifySession, resetPassword };
